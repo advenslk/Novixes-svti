@@ -1,0 +1,1370 @@
+ARVEX HOSTING — FULL PREMIUM HOSTING PLATFORM
+
+Build a complete, production-ready hosting company website and customer platform for my hosting brand ArveX Hosting.
+
+This must NOT be a basic landing page or simple template.
+
+I want a complete modern hosting platform similar in functionality and polish to premium hosting companies such as Hostinger, but with a unique futuristic gaming/infrastructure identity.
+
+The entire website must be fully responsive, fast, animated, professional, and manageable through a powerful Admin Panel.
+
+---
+
+1. BRAND & DESIGN DIRECTION
+
+Brand:
+ArveX Hosting
+
+Design style:
+
+- Premium
+- Futuristic
+- Gaming + Cloud Infrastructure
+- Dark UI
+- Modern glassmorphism
+- Subtle neon accents
+- High-quality animations
+- Professional typography
+- Clean spacing
+- Smooth transitions
+- Premium SaaS-style interface
+- Do NOT make it look like a generic AI-generated website
+
+Use a consistent ArveX visual identity throughout the entire platform.
+
+The design should feel like:
+
+Gaming Infrastructure + Cloud Computing + Premium SaaS
+
+Use subtle animated backgrounds, particles, gradients, glowing elements and glass panels without making the website visually messy.
+
+---
+
+2. GLOBAL NAVIGATION
+
+Create a professional responsive navbar.
+
+Desktop navigation:
+
+- Home
+- Services
+- Game Hosting
+- VPS
+- VDS
+- Web Hosting
+- Bot Hosting
+- Domains
+- Status
+- Support
+
+Include:
+
+- Login
+- Register
+- Client Area
+- Cart/order indicator
+
+On mobile use a premium animated mobile navigation drawer.
+
+The navbar must remain consistent across every page.
+
+---
+
+3. REQUIRED ROUTES / PAGES
+
+Create separate real routes/pages.
+
+Required routes:
+
+/
+
+/services
+
+/services/game-hosting
+
+/services/vps
+
+/services/vds
+
+/services/web-hosting
+
+/services/bot-hosting
+
+/services/domains
+
+/status
+
+/support
+
+/login
+
+/register
+
+/dashboard
+
+/dashboard/services
+
+/dashboard/orders
+
+/dashboard/invoices
+
+/dashboard/tickets
+
+/dashboard/profile
+
+/dashboard/security
+
+/checkout
+
+/order
+
+/terms
+
+/privacy
+
+/refund-policy
+
+/acceptable-use-policy
+
+/about
+
+Every page must have its own proper layout, SEO metadata, responsive design and animations.
+
+---
+
+4. HOMEPAGE
+
+Create an extremely premium homepage.
+
+Hero section:
+
+Large headline:
+
+"Power Your World With ArveX"
+
+or an equivalent premium hosting-focused headline.
+
+Subtitle describing reliable gaming and cloud infrastructure.
+
+Add:
+
+- View Services button
+- Get Started button
+- View Status button
+
+Hero background:
+
+Use a large immersive gaming/cloud infrastructure visual.
+
+The background should be subtle enough that text remains readable.
+
+For the Game Hosting visual, use a cinematic Minecraft-inspired environment / voxel gaming infrastructure atmosphere.
+
+Do NOT use copyrighted logos or official game artwork unnecessarily.
+
+Add a dark overlay and subtle animated particles.
+
+---
+
+5. HERO BACKGROUND ANIMATION
+
+When the homepage loads:
+
+- Background slowly moves/parallax
+- Floating particles
+- Soft light movement
+- Gradient animation
+- Subtle glow
+- Smooth entrance animations
+
+Do NOT make animations excessive.
+
+The website should feel premium rather than like a flashy gaming template.
+
+---
+
+6. LOGO LOADING SCREEN
+
+Create a premium initial loading screen.
+
+When the website first loads:
+
+Display the ArveX Hosting logo in the center.
+
+Animate the logo with:
+
+- Fade in
+- Soft glow
+- Scale animation
+- Subtle rotating/light effect
+
+Then smoothly transition into the website.
+
+IMPORTANT:
+
+The loading screen must be completely configurable from the Admin Panel.
+
+Admin must be able to:
+
+- Enable/disable loading screen
+- Upload/change logo
+- Change animation style
+- Change loading duration
+- Change background
+- Change loading text
+- Change colors
+
+---
+
+7. HERO ANNOUNCEMENT / PROMO
+
+Below or integrated with the hero section, create a premium promotional announcement component.
+
+Admin can control:
+
+- Text
+- Icon
+- Link
+- Button
+- Background
+- Active/inactive state
+
+Example:
+
+"Launch your next server with ArveX Hosting"
+
+The entire component must be editable from Admin Panel.
+
+---
+
+8. PARTNER BAR
+
+Create an animated partner/integration bar.
+
+Place it below the hero section.
+
+Example:
+
+"Trusted Technology Partners"
+
+Display partner logos/cards.
+
+The partner bar should have smooth infinite horizontal animation.
+
+Admin Panel must allow:
+
+- Add partner
+- Edit partner
+- Remove partner
+- Upload logo
+- Change name
+- Add website URL
+- Enable/disable partner
+- Change order
+- Enable/disable animation
+
+Admin should be able to control everything.
+
+---
+
+9. HOMEPAGE SECTIONS
+
+Create premium sections for:
+
+Why ArveX?
+
+Show:
+
+- High Performance
+- Reliable Infrastructure
+- DDoS Protection
+- Instant Deployment
+- 24/7 Support
+- Global Locations
+- NVMe Storage
+- Powerful CPUs
+
+Infrastructure
+
+Show:
+
+- CPU technology
+- RAM
+- NVMe
+- Network
+- DDoS protection
+- Locations
+
+Services
+
+Cards for:
+
+- Game Hosting
+- VPS
+- VDS
+- Web Hosting
+- Bot Hosting
+- Domains
+
+Each card links to its respective service page.
+
+Game Hosting Showcase
+
+Show featured games with animated cards.
+
+Server Locations
+
+Display available locations on a stylish world map / location visualization.
+
+Locations must be editable from Admin Panel.
+
+Statistics
+
+Examples:
+
+- Active Servers
+- Customers
+- Locations
+- Uptime
+- Years of Experience
+
+All statistics must be editable from Admin Panel.
+
+Testimonials
+
+Admin-managed customer testimonials.
+
+Admin can:
+
+- Add
+- Edit
+- Delete
+- Enable/disable
+
+FAQ
+
+Admin-managed FAQ system.
+
+Admin can:
+
+- Add question
+- Edit question
+- Delete question
+- Reorder questions
+- Enable/disable
+
+Final CTA
+
+Premium call-to-action section:
+
+"Ready to deploy?"
+
+Buttons:
+
+"Get Started"
+"Explore Services"
+
+---
+
+10. GAME HOSTING PAGE
+
+Route:
+
+/services/game-hosting
+
+Create a premium Game Hosting marketplace.
+
+Games:
+
+1. Minecraft Java
+2. Minecraft Bedrock
+3. Palworld
+4. Rust
+5. ARK: Survival Evolved
+6. Terraria
+7. Project Zomboid
+8. FiveM / GTA V
+
+Each game should have:
+
+- Game image
+- Game name
+- Short description
+- Starting price
+- Available plans
+- View Plans button
+- Order button
+
+---
+
+11. GAME DETAIL PAGES
+
+Each game should support a dedicated page.
+
+Example:
+
+/services/game-hosting/minecraft-java
+
+/admin-managed-slug
+
+The game page should show:
+
+- Game banner
+- Game description
+- Features
+- Available locations
+- Plans
+- RAM
+- CPU
+- Storage
+- Backups
+- DDoS protection
+- Deployment time
+- Price
+- Order button
+
+Plans must be dynamically loaded from the database.
+
+---
+
+12. OTHER SERVICES
+
+Create separate premium service pages for:
+
+VPS
+
+/ services / vps
+
+Include:
+
+- VPS plans
+- RAM
+- vCPU
+- Storage
+- Bandwidth
+- IPv4
+- IPv6
+- Location
+- Operating systems
+- DDoS protection
+- Price
+- Billing cycle
+- Order button
+
+VDS
+
+/ services / vds
+
+Include dedicated-resource style plans.
+
+Web Hosting
+
+/ services / web-hosting
+
+Include:
+
+- Storage
+- Websites
+- Databases
+- Bandwidth
+- SSL
+- Email
+- Control panel
+- Backups
+
+Bot Hosting
+
+/ services / bot-hosting
+
+Include:
+
+- RAM
+- CPU
+- Storage
+- Node/Python support
+- 24/7 uptime
+- Deployment
+- Price
+
+Domains
+
+/ services / domains
+
+Include domain search.
+
+Example TLDs:
+
+.com
+.net
+.org
+.io
+.xyz
+.online
+.site
+.ai
+
+Admin must be able to add/remove/edit TLDs and pricing.
+
+---
+
+13. SERVICE PLAN SYSTEM
+
+This is extremely important.
+
+Every service must use a database-driven plan system.
+
+Admin must be able to:
+
+CREATE PLAN
+
+EDIT PLAN
+
+DELETE PLAN
+
+ENABLE/DISABLE PLAN
+
+DUPLICATE PLAN
+
+REORDER PLAN
+
+Plans must support configurable fields.
+
+Example:
+
+Plan name:
+RAM:
+CPU:
+Storage:
+Bandwidth:
+IPv4:
+Locations:
+Backups:
+Price:
+Currency:
+Billing cycle:
+Description:
+Features:
+Badge:
+Popular:
+Enabled:
+
+Different services may have different specification fields.
+
+Do NOT hard-code plans into frontend code.
+
+Everything must come from the database.
+
+---
+
+14. ADMIN PANEL
+
+Create a complete professional Admin Dashboard.
+
+Route:
+
+/admin
+
+Secure admin authentication.
+
+Admin dashboard should include:
+
+- Overview
+- Analytics
+- Customers
+- Services
+- Games
+- Plans
+- Orders
+- Payments
+- Invoices
+- Domains
+- Locations
+- Partners
+- Testimonials
+- FAQ
+- Homepage
+- Announcements
+- Loading Screen
+- Navigation
+- Footer
+- Status
+- Support
+- Tickets
+- Coupons
+- Settings
+- Users
+- Admin Users
+- Audit Logs
+
+---
+
+15. ADMIN SERVICE MANAGEMENT
+
+Admin should be able to manage EVERY service.
+
+Services:
+
+Game Hosting
+VPS
+VDS
+Web Hosting
+Bot Hosting
+Domains
+
+For every service:
+
+- Create
+- Edit
+- Delete
+- Enable
+- Disable
+- Change name
+- Change description
+- Change icon
+- Change image
+- Change pricing
+- Manage plans
+- Manage specifications
+- Manage features
+- Manage order button
+- Change display order
+
+No frontend hard-coded service data.
+
+---
+
+16. ADMIN GAME MANAGEMENT
+
+Admin can:
+
+- Add games
+- Edit games
+- Delete games
+- Upload game image
+- Upload banner
+- Change description
+- Change slug
+- Change starting price
+- Assign plans
+- Assign locations
+- Enable/disable game
+- Reorder games
+
+---
+
+17. ORDER SYSTEM
+
+When customer clicks:
+
+"Order Server"
+
+or
+
+"Order VPS"
+
+or
+
+"Order Now"
+
+open a proper order flow.
+
+Step 1:
+
+Select plan.
+
+Step 2:
+
+Configure:
+
+- Location
+- Server name
+- Operating system where applicable
+- Additional options
+- Billing cycle
+
+Step 3:
+
+Show order summary.
+
+Step 4:
+
+Payment.
+
+---
+
+18. STRIPE PAYMENT
+
+Integrate Stripe Checkout / Stripe Payment infrastructure.
+
+Customer should be able to pay securely through Stripe.
+
+Support:
+
+- Card payment
+- Payment confirmation
+- Successful payment
+- Failed payment
+- Cancelled payment
+- Webhook handling
+- Order status updates
+- Invoice creation
+
+IMPORTANT:
+
+Stripe secret keys must NEVER be exposed to frontend.
+
+Use secure server-side environment variables.
+
+Admin Settings should allow configuration of payment-related settings where appropriate.
+
+---
+
+19. CUSTOMER DASHBOARD
+
+Create a complete client portal.
+
+Route:
+
+/dashboard
+
+Dashboard should show:
+
+- Welcome message
+- Active services
+- Orders
+- Invoices
+- Payments
+- Tickets
+- Account status
+
+Customer can:
+
+- View services
+- View order
+- View invoices
+- Download invoices
+- Open support ticket
+- Update profile
+- Change password
+- Enable 2FA
+- Manage sessions
+- Logout other sessions
+
+---
+
+20. SUPPORT SYSTEM
+
+Route:
+
+/support
+
+Create a professional support center.
+
+Include:
+
+- Knowledge base
+- FAQ
+- Support categories
+- Contact support
+- Ticket system
+- Discord support link
+
+Customer can create tickets.
+
+Ticket fields:
+
+- Subject
+- Category
+- Priority
+- Message
+- Attachments
+
+Admin can:
+
+- View tickets
+- Reply
+- Change status
+- Assign ticket
+- Close ticket
+- Reopen ticket
+- Change priority
+
+---
+
+21. STATUS PAGE
+
+Route:
+
+/status
+
+Create a beautiful real-time service status page.
+
+Display:
+
+- Website
+- Game Hosting
+- VPS
+- VDS
+- Web Hosting
+- Bot Hosting
+- Domains
+- API
+- Control Panel
+
+Status:
+
+Operational
+Degraded
+Partial Outage
+Major Outage
+Maintenance
+
+Admin can update everything from Admin Panel.
+
+Include uptime statistics and incident history.
+
+---
+
+22. LOCATIONS
+
+Create infrastructure location management.
+
+Admin can:
+
+- Add location
+- Edit location
+- Delete location
+- Change country
+- Change city
+- Change flag
+- Change status
+- Add latency information
+- Enable/disable location
+
+Locations should appear automatically on service pages.
+
+---
+
+23. COUPON SYSTEM
+
+Admin can create coupons.
+
+Fields:
+
+- Coupon code
+- Discount type
+- Percentage
+- Fixed amount
+- Expiration
+- Usage limit
+- Minimum order
+- Services applicable
+- Active/inactive
+
+Customer can apply coupon during checkout.
+
+---
+
+24. ANALYTICS
+
+Admin dashboard should show:
+
+- Revenue
+- Orders
+- Customers
+- Active services
+- Successful payments
+- Failed payments
+- Popular services
+- Popular games
+- Coupon usage
+
+Use beautiful charts.
+
+---
+
+25. CMS SYSTEM
+
+IMPORTANT:
+
+I want the website to behave like a full CMS.
+
+Almost EVERYTHING visible on the public website must be manageable from Admin Panel.
+
+Admin should be able to edit:
+
+- Homepage hero
+- Headline
+- Subtitle
+- Buttons
+- Images
+- Backgrounds
+- Services
+- Service descriptions
+- Plans
+- Prices
+- Features
+- Partners
+- Testimonials
+- FAQ
+- Statistics
+- Locations
+- Announcements
+- Loading screen
+- Footer
+- Navigation
+- Social links
+- Contact details
+
+Avoid hard-coded content wherever possible.
+
+---
+
+26. FOOTER
+
+Create a premium footer.
+
+Columns:
+
+Services
+Company
+Support
+Legal
+
+Include:
+
+- Services
+- Status
+- Support
+- Discord
+- Terms
+- Privacy
+- Refund Policy
+- Acceptable Use Policy
+
+Also include:
+
+© ArveX Hosting
+
+Social links must be editable from Admin Panel.
+
+---
+
+27. SEO
+
+Implement SEO properly.
+
+Every page should support:
+
+- Title
+- Meta description
+- OpenGraph
+- Twitter/X metadata
+- Canonical URL
+- Sitemap
+- Robots configuration
+
+Admin should be able to edit page SEO metadata.
+
+---
+
+28. PERFORMANCE
+
+The website must be optimized.
+
+Requirements:
+
+- Lazy loading
+- Optimized images
+- Code splitting
+- Fast page transitions
+- Minimal unnecessary JavaScript
+- Responsive design
+- Mobile-first optimization
+- Good Core Web Vitals
+
+Animations must not destroy performance.
+
+---
+
+29. SECURITY
+
+Implement:
+
+- Secure authentication
+- Password hashing
+- Role-based access control
+- Admin authorization
+- Input validation
+- Server-side validation
+- Secure API routes
+- Rate limiting
+- CSRF protection where applicable
+- Secure sessions
+- Stripe webhook signature verification
+- No secret keys in frontend
+- Audit logs for admin actions
+
+Roles:
+
+Super Admin
+Admin
+Support Staff
+
+---
+
+30. DATABASE
+
+Use a proper relational database.
+
+Recommended:
+
+PostgreSQL.
+
+Create structured tables for:
+
+users
+admin_users
+services
+service_plans
+games
+game_plans
+locations
+orders
+order_items
+payments
+invoices
+subscriptions
+domains
+partners
+testimonials
+faqs
+tickets
+ticket_messages
+coupons
+announcements
+site_settings
+homepage_sections
+navigation_items
+footer_settings
+loading_screen_settings
+status_services
+status_incidents
+audit_logs
+
+Use proper relationships and indexes.
+
+---
+
+31. ADMIN SETTINGS
+
+Create a centralized Settings system.
+
+Admin can manage:
+
+General Settings
+Branding
+Logo
+Favicon
+Colors
+Loading Screen
+Navigation
+Homepage
+Footer
+SEO
+Payment Settings
+Stripe Settings
+Email Settings
+Discord Settings
+Security
+Maintenance Mode
+Status Page
+
+---
+
+32. MAINTENANCE MODE
+
+Admin can enable Maintenance Mode.
+
+When enabled:
+
+Show a beautiful maintenance page.
+
+Admin can configure:
+
+- Title
+- Description
+- Logo
+- Background
+- Estimated time
+- Contact/support button
+
+Allow admins to bypass maintenance mode.
+
+---
+
+33. RESPONSIVE DESIGN
+
+Must work perfectly on:
+
+- Android phones
+- iPhones
+- Tablets
+- Laptops
+- Desktop monitors
+- Large displays
+
+Do not simply shrink desktop UI.
+
+Create proper mobile layouts.
+
+---
+
+34. MICRO INTERACTIONS
+
+Add premium micro-interactions:
+
+- Button hover
+- Card hover
+- Page transitions
+- Scroll animations
+- Number counters
+- Glass reflections
+- Soft glow
+- Loading skeletons
+- Smooth dropdowns
+- Modal animations
+- Toast notifications
+- Form validation animations
+
+Keep everything tasteful and professional.
+
+---
+
+35. ADMIN UX
+
+The Admin Panel must be extremely easy to use.
+
+Use:
+
+- Sidebar navigation
+- Dashboard cards
+- Tables
+- Search
+- Filters
+- Pagination
+- Modals
+- Tabs
+- Confirmation dialogs
+- Toast notifications
+- Drag-and-drop ordering
+- Image upload previews
+
+Admin should NOT need to edit source code to change normal website content.
+
+---
+
+36. CONTENT MANAGEMENT PRINCIPLE
+
+CRITICAL RULE:
+
+If something can reasonably be changed from an Admin Panel, do NOT hard-code it.
+
+For example:
+
+Do NOT hard-code:
+
+"$5.99/month"
+
+Instead store it in database and display dynamically.
+
+Do NOT hard-code:
+
+"Singapore"
+
+Store it in locations.
+
+Do NOT hard-code:
+
+"8GB RAM"
+
+Store it as plan specification.
+
+Do NOT hard-code:
+
+"ArveX Hosting — Power Your World"
+
+Store it in CMS settings.
+
+The Admin Panel should control the website.
+
+---
+
+37. VISUAL QUALITY
+
+The final website must look like a real commercial hosting company website.
+
+Avoid:
+
+- Generic templates
+- Huge unnecessary gradients
+- Excessive rounded cards
+- Random emojis
+- Poor typography
+- Empty sections
+- AI-looking copy
+- Excessive animations
+- Cheap gaming website aesthetics
+
+Focus on:
+
+Premium
+Professional
+Futuristic
+Reliable
+Fast
+Trustworthy
+High-end
+
+---
+
+38. ARCHITECTURE
+
+Use a clean production-ready architecture.
+
+Separate:
+
+Frontend
+Backend/API
+Database
+Authentication
+Admin
+Customer Dashboard
+Payment system
+CMS
+
+Use reusable components.
+
+Create reusable:
+
+Navbar
+Footer
+ServiceCard
+PlanCard
+PricingTable
+StatusBadge
+Modal
+Toast
+Button
+Section
+AdminTable
+AdminForm
+DashboardCard
+
+---
+
+39. IMPORTANT FUNCTIONAL REQUIREMENT
+
+Do not create fake buttons that do nothing.
+
+Every major button must have a working route or workflow.
+
+Examples:
+
+"View Plans" → service plan section
+
+"Order Now" → order flow
+
+"Checkout" → payment flow
+
+"Login" → authentication
+
+"Dashboard" → customer dashboard
+
+"Support" → support page
+
+"View Status" → status page
+
+Admin CRUD actions must actually update the database.
+
+---
+
+40. INITIAL DEMO CONTENT
+
+Create realistic initial demo content for:
+
+Game Hosting
+VPS
+VDS
+Web Hosting
+Bot Hosting
+Domains
+
+Games:
+
+Minecraft Java
+Minecraft Bedrock
+Palworld
+Rust
+ARK: Survival Evolved
+Terraria
+Project Zomboid
+FiveM / GTA V
+
+Use realistic placeholder pricing/specifications that can later be edited from Admin Panel.
+
+Clearly structure the data so I can replace everything later.
+
+---
+
+41. FINAL REQUIREMENT
+
+This project should feel like:
+
+ArveX Hosting — a complete hosting company platform
+
+NOT:
+
+"AI-generated landing page"
+
+I need:
+
+PUBLIC WEBSITE
++
+CUSTOMER PORTAL
++
+ADMIN PANEL
++
+CMS
++
+SERVICE MANAGEMENT
++
+PLAN MANAGEMENT
++
+ORDER SYSTEM
++
+STRIPE PAYMENT
++
+SUPPORT SYSTEM
++
+STATUS PAGE
++
+PARTNER MANAGEMENT
++
+LOADING SCREEN MANAGEMENT
++
+SEO
++
+SECURITY
++
+DATABASE
+
+Everything should work together as one coherent system.
+
+Build the UI first with a polished production-quality design, then implement the backend/database/authentication/payment architecture required for the features.
+
+Use realistic demo data where credentials or external API keys are required, and clearly identify the environment variables/settings I need to configure.
+
+Do not expose secrets in frontend code.
+
+Make the final result scalable so additional hosting services, games, plans, locations and payment methods can be added later without redesigning the system.

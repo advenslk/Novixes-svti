@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "ArveX Hosting"
+description = "A premium futuristic hosting platform for gaming servers, cloud infrastructure, VPS, VDS, web hosting, bot hosting, domains, customer accounts, support, and admin-managed content."
+version = "1.0.0"
+id = "artifacts/arvex-hosting"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19104
+
+[services.development]
+run = "pnpm --filter @workspace/arvex-hosting run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/arvex-hosting", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/arvex-hosting/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19104"
+BASE_PATH = "/"
