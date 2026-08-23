@@ -1,5 +1,7 @@
 import { Router, type IRouter } from "express";
 import { createHmac, timingSafeEqual, randomUUID } from "node:crypto";
+import { db, ordersTable } from "@workspace/db";
+import { desc, eq } from "drizzle-orm";
 
 const router: IRouter = Router();
 const SESSION_COOKIE = "arvex_admin_session";
@@ -38,8 +40,12 @@ function isValidSession(value: string | undefined) {
 
 router.post("/orders", async (req, res) => {
   try {
-    const name = requiredString(req.body?.name, "name");
-    const email = requiredString(req.body?.email, "email");
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Sign in before placing an order." });
+    }
+    const name = [req.user.firstName, req.user.lastName].filter(Boolean).join(" ") || "ArveX customer";
+    const email = req.user.email;
+    if (!email) return res.status(400).json({ message: "Your account does not have an email address." });
     const plan = requiredString(req.body?.plan, "plan");
     const service = requiredString(req.body?.service, "service");
     const region = requiredString(req.body?.region, "region");
@@ -59,6 +65,15 @@ router.post("/orders", async (req, res) => {
     }
 
     const orderId = `ARX-${randomUUID().slice(0, 8).toUpperCase()}`;
+    await db.insert(ordersTable).values({
+      id: orderId,
+      userId: req.user.id,
+      plan,
+      service,
+      region,
+      total: total.toFixed(2),
+      status: "received",
+    });
     const discordResponse = await fetch(webhook, {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -81,6 +96,7 @@ router.post("/orders", async (req, res) => {
     });
 
     if (!discordResponse.ok) {
+      await db.update(ordersTable).set({ status: "notification_failed" }).where(eq(ordersTable.id, orderId));
       return res.status(502).json({ message: "Discord could not accept the order notification. Please try again." });
     }
 
@@ -88,6 +104,12 @@ router.post("/orders", async (req, res) => {
   } catch (error) {
     return res.status(400).json({ message: error instanceof Error ? error.message : "Invalid order." });
   }
+});
+
+router.get("/orders", async (req, res) => {
+  if (!req.isAuthenticated()) return res.status(401).json({ message: "Sign in to view orders." });
+  const orders = await db.select().from(ordersTable).where(eq(ordersTable.userId, req.user.id)).orderBy(desc(ordersTable.createdAt));
+  return res.json({ orders });
 });
 
 router.post("/admin/login", (req, res) => {
