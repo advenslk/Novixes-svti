@@ -1,0 +1,1 @@
+- [Discord order notifications](discord-order-notifications.md) — channel URLs identify destinations; server-side posting requires a secret webhook.
