@@ -1,1 +1,2 @@
 - [Discord order notifications](discord-order-notifications.md) — channel URLs identify destinations; server-side posting requires a secret webhook.
+- [Imported artifact workflows](imported-artifact-workflows.md) — imported artifact metadata may exist without registry/workflow entries; verify registration before preview debugging.

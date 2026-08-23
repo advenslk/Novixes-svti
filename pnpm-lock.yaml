@@ -644,7 +644,15 @@ importers:
         specifier: ^0.31.10
         version: 0.31.10
 
-  lib/replit-auth-web: {}
+  lib/replit-auth-web:
+    dependencies:
+      react:
+        specifier: 'catalog:'
+        version: 19.1.0
+    devDependencies:
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.17
 
   scripts:
     devDependencies:

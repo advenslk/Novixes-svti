@@ -1,1 +1,1 @@
-{"name":"@workspace/replit-auth-web","version":"0.0.0","private":true,"type":"module","exports":{".":"./src/index.ts"},"dependencies":{}}
+{"name":"@workspace/replit-auth-web","version":"0.0.0","private":true,"type":"module","exports":{".":"./src/index.ts"},"dependencies":{"react":"catalog:"},"devDependencies":{"@types/react":"catalog:"}}
