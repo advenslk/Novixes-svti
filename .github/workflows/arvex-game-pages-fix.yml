@@ -1,0 +1,202 @@
+name: ArveX Game Pages Fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/arvex-game-pages-fix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-game-pages:
+    if: ${{ github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[arvex-game-fix]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Repair game catalog and routes
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          app = Path('artifacts/arvex-hosting/src/App.tsx')
+          css = Path('artifacts/arvex-hosting/src/index.css')
+          s = app.read_text()
+
+          # Make the game catalog cards behave consistently: available games navigate,
+          # while Terraria and Project Zomboid are visibly disabled and cannot be opened.
+          start = s.index('function GameServerPage()')
+          end = s.index('function ArkAscendedPlansPage()', start)
+
+          replacement = r'''function GameServerPage() {
+  return (
+    <PublicShell>
+      <main className="page">
+        <div className="container page-hero">
+          <p className="eyebrow"><span className="eyebrow-dot"/> GAME SERVERS</p>
+          <h1>Choose your<br/><em>game.</em></h1>
+          <p>Select the game you want to host and choose the perfect server configuration for your community.</p>
+        </div>
+
+        <div className="container">
+          <div className="catalog-grid">
+            {gameServerOptions.map((game, i) => {
+              const Icon = game.icon;
+              const href = `/services/game-hosting/${game.slug}`;
+
+              const card = (
+                <div
+                  className={`catalog-card reveal delay-${i % 3}${game.comingSoon ? ' coming-soon-card' : ''}`}
+                  data-testid={`game-select-${game.slug}`}
+                  aria-disabled={game.comingSoon ? 'true' : undefined}
+                  style={{ position: 'relative' }}
+                >
+                  <div className={`catalog-icon icon-${game.color}`}><Icon size={23}/></div>
+                  <div className="catalog-number mono">{String(i + 1).padStart(2, '0')}</div>
+                  {game.comingSoon && <span className="coming-soon-badge">COMING SOON</span>}
+                  <h2>{game.title}</h2>
+                  <p>{game.desc}</p>
+                  <div className="catalog-meta">
+                    <span className="mono">{game.comingSoon ? 'NOT AVAILABLE YET' : 'VIEW PLANS'}</span>
+                    {!game.comingSoon && <ArrowRight size={17}/>} 
+                  </div>
+                </div>
+              );
+
+              return game.comingSoon ? card : <Link href={href}>{card}</Link>;
+            })}
+          </div>
+        </div>
+      </main>
+    </PublicShell>
+  );
+}
+
+'''
+          s = s[:start] + replacement + s[end:]
+
+          # Ensure direct routes exist for both Minecraft variants and the already
+          # supported dedicated game pages. Terraria/Zomboid intentionally have no route.
+          old = '<Route path="/services/game-hosting/palworld"><PalworldPlansPage/></Route><Route path="/services/game-hosting/ark-survival-evolved"><ArkPlansPage/></Route><Route path="/services/game-hosting/ark-survival-ascended"><ArkAscendedPlansPage/></Route><Route path="/services/game-hosting/rust"><GamePlanPage gameSlug="rust"/></Route>\n<Route path="/services/game-hosting/fivem"><FivemPlansPage/></Route>'
+          new = '<Route path="/services/game-hosting/minecraft-java"><GamePlanPage gameSlug="minecraft-java"/></Route><Route path="/services/game-hosting/minecraft-bedrock"><GamePlanPage gameSlug="minecraft-bedrock"/></Route><Route path="/services/game-hosting/palworld"><PalworldPlansPage/></Route><Route path="/services/game-hosting/ark-survival-evolved"><ArkPlansPage/></Route><Route path="/services/game-hosting/ark-survival-ascended"><ArkAscendedPlansPage/></Route><Route path="/services/game-hosting/rust"><GamePlanPage gameSlug="rust"/></Route>\n<Route path="/services/game-hosting/fivem"><FivemPlansPage/></Route>'
+          if old in s:
+              s = s.replace(old, new, 1)
+          else:
+              # Fallback: insert Minecraft routes immediately before the Palworld route.
+              marker = '<Route path="/services/game-hosting/palworld">'
+              if marker in s and 'path="/services/game-hosting/minecraft-java"' not in s:
+                  s = s.replace(marker, '<Route path="/services/game-hosting/minecraft-java"><GamePlanPage gameSlug="minecraft-java"/></Route><Route path="/services/game-hosting/minecraft-bedrock"><GamePlanPage gameSlug="minecraft-bedrock"/></Route>' + marker, 1)
+
+          # Replace the old game-catalog page with the same non-clickable Coming Soon treatment.
+          gs = s.index('function GameServersPage()')
+          ge = s.index('function ServicesPage()', gs)
+          catalog_replacement = r'''function GameServersPage() {
+  return (
+    <PublicShell>
+      <main className="page">
+        <div className="container page-hero">
+          <p className="eyebrow"><span className="eyebrow-dot"/> GAME SERVERS</p>
+          <h1>Choose your<br/><em>game.</em></h1>
+          <p>Select a game to view available ArveX hosting plans, resources and pricing.</p>
+        </div>
+        <div className="container">
+          <div className="catalog-grid game-catalog-grid">
+            {gameCatalog.map((game, index) => {
+              const Icon = game.icon;
+              const content = (
+                <div className={`catalog-card reveal${game.comingSoon ? ' coming-soon-card' : ''}`} style={{position:'relative'}} data-testid={`card-game-${game.slug}`} aria-disabled={game.comingSoon ? 'true' : undefined}>
+                  <div className="catalog-icon icon-violet"><Icon size={23}/></div>
+                  <div className="catalog-number mono">{String(index + 1).padStart(2, '0')}</div>
+                  {game.comingSoon && <span className="coming-soon-badge">COMING SOON</span>}
+                  <h2>{game.title}</h2>
+                  <p>{game.desc}</p>
+                  <div className="catalog-meta"><span className="mono">{game.comingSoon ? 'NOT AVAILABLE YET' : 'VIEW PLANS'}</span>{!game.comingSoon && <ArrowRight size={17}/>}</div>
+                </div>
+              );
+              return game.comingSoon ? content : <Link href={`/services/game-hosting/${game.slug}`}>{content}</Link>;
+            })}
+          </div>
+        </div>
+      </main>
+    </PublicShell>
+  );
+}
+
+'''
+          s = s[:gs] + catalog_replacement + s[ge:]
+          app.write_text(s)
+
+          # Strong, polished red Coming Soon treatment; pointer events are disabled
+          # so the two unavailable cards cannot navigate even if wrapped by a parent.
+          marker = '/* ARVEX COMING SOON */'
+          styles = r'''
+
+/* ARVEX COMING SOON */
+.coming-soon-card {
+  cursor: not-allowed !important;
+  opacity: .82;
+  border-color: rgba(248, 113, 113, .28) !important;
+  background: linear-gradient(145deg, rgba(127, 29, 29, .10), rgba(15, 15, 20, .70));
+}
+.coming-soon-card:hover {
+  transform: none !important;
+  border-color: rgba(248, 113, 113, .38) !important;
+  box-shadow: 0 0 30px rgba(239, 68, 68, .08);
+}
+.coming-soon-card h2,
+.coming-soon-card p,
+.coming-soon-card .catalog-meta {
+  opacity: .78;
+}
+.coming-soon-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 9px;
+  border: 1px solid rgba(248, 113, 113, .48);
+  border-radius: 999px;
+  background: rgba(127, 29, 29, .22);
+  color: #f87171;
+  font-family: var(--app-font-mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .13em;
+  line-height: 1;
+  box-shadow: 0 0 18px rgba(239, 68, 68, .10);
+}
+'''
+          c = css.read_text()
+          if marker not in c:
+              c += styles
+              css.write_text(c)
+
+          print('ArveX game catalog/routes repaired.')
+
+      - name: Verify build
+        run: |
+          corepack enable
+          pnpm install --frozen-lockfile
+          pnpm --filter arvex-hosting build
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add artifacts/arvex-hosting/src/App.tsx artifacts/arvex-hosting/src/index.css
+          if git diff --cached --quiet; then
+            echo "No changes needed."
+            exit 0
+          fi
+          git commit -m "fix: repair ArveX game pages and coming soon cards [arvex-game-fix]"
+          git push
