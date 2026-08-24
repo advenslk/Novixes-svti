@@ -1,37 +1,199 @@
 import { Router, type Request, type Response } from "express";
-import * as oidc from "openid-client";
-import { clearSession, createSession, getOidcConfig, getSessionId, ISSUER_URL, SESSION_COOKIE, SESSION_TTL, upsertUser, type SessionData } from "../lib/auth";
+import crypto from "node:crypto";
+import { db, usersTable } from "@workspace/db";
+import { eq } from "drizzle-orm";
+import {
+  createSession,
+  getSessionId,
+  clearSession,
+  SESSION_COOKIE,
+  SESSION_TTL,
+  getSession,
+} from "../lib/auth";
 
 const router = Router();
-const OIDC_COOKIE_TTL = 10 * 60 * 1000;
-function origin(req: Request) { return `${req.headers["x-forwarded-proto"] || "https"}://${req.headers["x-forwarded-host"] || req.headers.host || "localhost"}`; }
-function safeReturnTo(value: unknown) { return typeof value === "string" && value.startsWith("/") && !value.startsWith("//") ? value : "/"; }
-function cookie(res: Response, name: string, value: string, maxAge = OIDC_COOKIE_TTL) { res.cookie(name, value, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge }); }
 
-router.get("/auth/user", (req, res) => res.json({ user: req.isAuthenticated() ? req.user : null }));
-router.get("/login", async (req, res) => {
-  const config = await getOidcConfig();
-  const state = oidc.randomState(), nonce = oidc.randomNonce(), verifier = oidc.randomPKCECodeVerifier();
-  const challenge = await oidc.calculatePKCECodeChallenge(verifier);
-  const url = oidc.buildAuthorizationUrl(config, { redirect_uri: `${origin(req)}/api/callback`, scope: "openid email profile offline_access", code_challenge: challenge, code_challenge_method: "S256", prompt: "login consent", state, nonce });
-  cookie(res, "code_verifier", verifier); cookie(res, "nonce", nonce); cookie(res, "state", state); cookie(res, "return_to", safeReturnTo(req.query.returnTo));
-  return res.redirect(url.href);
-});
-router.get("/callback", async (req, res) => {
-  const config = await getOidcConfig();
-  const callbackUrl = `${origin(req)}/api/callback`;
-  const currentUrl = new URL(`${callbackUrl}?${new URLSearchParams(req.query as Record<string, string>)}`);
+function hashPassword(password: string): string {
+  return crypto
+    .createHash("sha256")
+    .update(password)
+    .digest("hex");
+}
+
+function setSessionCookie(res: Response, sid: string) {
+  res.cookie(SESSION_COOKIE, sid, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: SESSION_TTL,
+  });
+}
+
+function publicUser(user: typeof usersTable.$inferSelect) {
+  const { passwordHash: _passwordHash, ...safeUser } = user;
+  return safeUser;
+}
+
+router.get("/auth/user", async (req, res) => {
   try {
-    const tokens = await oidc.authorizationCodeGrant(config, currentUrl, { pkceCodeVerifier: req.cookies?.code_verifier, expectedNonce: req.cookies?.nonce, expectedState: req.cookies?.state, idTokenExpected: true });
-    const claims = tokens.claims();
-    if (!claims) return res.redirect("/api/login");
-    const user = await upsertUser(claims as unknown as Record<string, unknown>);
-    const now = Math.floor(Date.now() / 1000);
-    const session: SessionData = { user, access_token: tokens.access_token, refresh_token: tokens.refresh_token, expires_at: tokens.expiresIn() ? now + tokens.expiresIn()! : claims.exp };
-    const sid = await createSession(session);
-    cookie(res, SESSION_COOKIE, sid, SESSION_TTL);
-    return res.redirect(safeReturnTo(req.cookies?.return_to));
-  } catch { return res.redirect("/api/login"); }
+    const sid = getSessionId(req);
+
+    if (!sid) {
+      return res.json({ user: null });
+    }
+
+    const session = await getSession(sid);
+
+    if (!session) {
+      return res.json({ user: null });
+    }
+
+    return res.json({ user: session.user });
+  } catch (error) {
+    console.error("AUTH USER ERROR:", error);
+    return res.status(500).json({ user: null });
+  }
 });
-router.get("/logout", async (req, res) => { await clearSession(res, getSessionId(req)); return res.redirect("/"); });
+
+router.post("/register", async (req, res) => {
+  try {
+    const {
+      email,
+      password,
+      firstName = "",
+      lastName = "",
+    } = req.body ?? {};
+
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email and password are required.",
+      });
+    }
+
+    if (String(password).length < 6) {
+      return res.status(400).json({
+        message: "Password must be at least 6 characters.",
+      });
+    }
+
+    const normalized = String(email).trim().toLowerCase();
+
+    const existing = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, normalized))
+      .limit(1);
+
+    if (existing.length) {
+      return res.status(409).json({
+        message: "An account with this email already exists.",
+      });
+    }
+
+    const passwordHash = hashPassword(String(password));
+
+    const [user] = await db
+      .insert(usersTable)
+      .values({
+        id: crypto.randomUUID(),
+        email: normalized,
+        passwordHash,
+        firstName: String(firstName),
+        lastName: String(lastName),
+        profileImageUrl: null,
+      })
+      .returning();
+
+    const safeUser = publicUser(user);
+
+    const sid = await createSession({
+      user: safeUser,
+      access_token: "local",
+    });
+
+    setSessionCookie(res, sid);
+
+    return res.status(201).json({
+      user: safeUser,
+    });
+  } catch (error) {
+    console.error("REGISTER ERROR:", error);
+
+    return res.status(500).json({
+      message: "Registration failed.",
+    });
+  }
+});
+
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body ?? {};
+
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email and password are required.",
+      });
+    }
+
+    const normalized = String(email).trim().toLowerCase();
+
+    const [user] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, normalized))
+      .limit(1);
+
+    if (!user || !user.passwordHash) {
+      return res.status(401).json({
+        message: "Invalid email or password.",
+      });
+    }
+
+    const passwordHash = hashPassword(String(password));
+
+    const valid = crypto.timingSafeEqual(
+      Buffer.from(passwordHash),
+      Buffer.from(user.passwordHash),
+    );
+
+    if (!valid) {
+      return res.status(401).json({
+        message: "Invalid email or password.",
+      });
+    }
+
+    const safeUser = publicUser(user);
+
+    const sid = await createSession({
+      user: safeUser,
+      access_token: "local",
+    });
+
+    setSessionCookie(res, sid);
+
+    return res.json({
+      user: safeUser,
+    });
+  } catch (error) {
+    console.error("LOGIN ERROR:", error);
+
+    return res.status(500).json({
+      message: "Login failed.",
+    });
+  }
+});
+
+router.get("/logout", async (req, res) => {
+  try {
+    await clearSession(res, getSessionId(req));
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error("LOGOUT ERROR:", error);
+    return res.status(500).json({
+      message: "Logout failed.",
+    });
+  }
+});
+
 export default router;
