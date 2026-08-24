@@ -1,13 +1,18 @@
 from pathlib import Path
-import re
 
 APP = Path('artifacts/arvex-hosting/src/App.tsx')
 s = APP.read_text(encoding='utf-8')
 
-# Restore the unavailable state for Bedrock without touching the existing game plans.
+# Mark Bedrock unavailable in both game catalog definitions used by the app.
 s = s.replace("slug: 'minecraft-bedrock',\n    title:", "slug: 'minecraft-bedrock',\n    unavailable: true,\n    title:", 1)
+s = s.replace("slug: \"minecraft-bedrock\",\n    title:", "slug: \"minecraft-bedrock\",\n    unavailable: true,\n    title:", 1)
 
-# Add a production-safe VPS page that uses the existing ArveX design system/classes.
+# Keep these games visible in the catalog, but make their state explicit.
+# Only add the flag when the property is not already present.
+s = s.replace("slug: 'terraria',\n    comingSoon: true", "slug: 'terraria',\n    comingSoon: true", 1)
+s = s.replace("slug: 'project-zomboid',\n    comingSoon: true", "slug: 'project-zomboid',\n    comingSoon: true", 1)
+
+# Add a dedicated VPS page if the previous repair is not already present.
 if 'function VpsPlansPage()' not in s:
     marker = 'function Router(){'
     vps = r'''function VpsPlansPage() {
@@ -24,13 +29,6 @@ if 'function VpsPlansPage()' not in s:
     { name:'ARX-VPS 64GB', price:18500, currency:'LKR', cpu:'20 vCore', ram:'64 GB', disk:'1.28 TB NVMe SSD', transfer:'Unmetered' },
     { name:'ARX-VPS 96GB', price:24000, currency:'LKR', cpu:'28 vCore', ram:'96 GB', disk:'1.92 TB NVMe SSD', transfer:'Unmetered' },
     { name:'ARX-VPS 128GB', price:29000, currency:'LKR', cpu:'32 vCore', ram:'128 GB', disk:'2.56 TB NVMe SSD', transfer:'Unmetered' },
-  ];
-
-  const included = [
-    'Full Root / Administrator Access', 'NVMe SSD Storage', 'Dedicated IPv4 Address',
-    'DDoS Protection', 'Multiple Linux OS Options', 'OS Reinstallation',
-    'Instant Deployment', 'Virtualization Isolation', 'Full VPS Control',
-    '24/7 Server Monitoring', 'Network Protection', 'Easy Upgrades', 'Discord Support'
   ];
 
   return (
@@ -54,7 +52,6 @@ if 'function VpsPlansPage()' not in s:
             <span className="mono">ARVEX / CLOUD VPS</span>
           </div>
         </section>
-
         <section className="container plans-section">
           <div className="plans-heading">
             <div>
@@ -65,22 +62,13 @@ if 'function VpsPlansPage()' not in s:
           </div>
           <div className="plans-grid">
             {vpsPlans.map((plan, index) => (
-              <PlanCard
-                key={plan.name}
-                plan={plan}
-                featured={index === 3}
-                onSelect={() => { window.location.href = `/support?service=vps&plan=${encodeURIComponent(plan.name)}`; }}
-              />
+              <PlanCard key={plan.name} plan={plan} featured={index === 3}
+                onSelect={() => { window.location.href = `/support?service=vps&plan=${encodeURIComponent(plan.name)}`; }} />
             ))}
           </div>
         </section>
-
         <section className="container product-bottom">
-          <div>
-            <ShieldCheck size={20}/>
-            <b>Included with every VPS</b>
-            <p>{included.join(' • ')}</p>
-          </div>
+          <div><ShieldCheck size={20}/><b>Included with every VPS</b><p>Full root access • NVMe SSD • Dedicated IPv4 • DDoS protection • Instant deployment • 24/7 monitoring</p></div>
           <ArrowLink href="/support">Need a custom VPS?</ArrowLink>
         </section>
       </main>
@@ -93,34 +81,66 @@ if 'function VpsPlansPage()' not in s:
         raise SystemExit('Router marker not found')
     s = s.replace(marker, vps + marker, 1)
 
-# Use the dedicated VPS page instead of the generic three-plan product page.
 s = s.replace('<Route path="/services/vps"><ProductPage kind="vps"/></Route>', '<Route path="/services/vps"><VpsPlansPage/></Route>', 1)
 
-# Restore the visual/interaction behavior for Coming Soon and Not Available cards in the React app.
-old = '''                    className={`catalog-card reveal delay-${i % 3}`}\n                    onClick={() => {\n                      if (game.slug === "palworld") {'''
-new = '''                    className={`catalog-card reveal delay-${i % 3} ${game.comingSoon || game.unavailable ? 'unavailable-card' : ''}`}\n                    onClick={() => {\n                      if (game.comingSoon || game.unavailable) return;\n                      if (game.slug === "palworld") {'''
-if old in s:
-    s = s.replace(old, new, 1)
+# Make the game catalog use dedicated pages for ASA and FiveM.
+old_routes = '''                      if (game.slug === "palworld") {
+                        window.location.href = "/services/game-hosting/palworld";
+                      } else if (game.slug === "rust") {
+                        window.location.href = "/services/game-hosting/rust";
+                      } else if (game.slug === "ark-survival-evolved" || game.slug === "ark") {
+                        window.location.href = "/services/game-hosting/ark-survival-evolved";
+                      } else {
+                        setSelectedGame(game);
+                      }'''
+new_routes = '''                      if (game.slug === "palworld") {
+                        window.location.href = "/services/game-hosting/palworld";
+                      } else if (game.slug === "rust") {
+                        window.location.href = "/services/game-hosting/rust";
+                      } else if (game.slug === "ark-survival-evolved" || game.slug === "ark") {
+                        window.location.href = "/services/game-hosting/ark-survival-evolved";
+                      } else if (game.slug === "ark-survival-ascended") {
+                        window.location.href = "/services/game-hosting/ark-survival-ascended";
+                      } else if (game.slug === "fivem") {
+                        window.location.href = "/services/game-hosting/fivem";
+                      } else {
+                        setSelectedGame(game);
+                      }'''
+if old_routes in s:
+    s = s.replace(old_routes, new_routes, 1)
 else:
-    raise SystemExit('GameServerPage card block not found')
+    raise SystemExit('Game routing block not found')
+
+# Block unavailable / coming-soon games and render a large red status badge.
+old_class = 'className={`catalog-card reveal delay-${i % 3}`}\n                    onClick={() => {'
+new_class = 'className={`catalog-card reveal delay-${i % 3} ${game.comingSoon || game.unavailable ? \'unavailable-card\' : \'\'}`}\n                    aria-disabled={game.comingSoon || game.unavailable ? \'true\' : undefined}\n                    onClick={() => {'
+if old_class in s:
+    s = s.replace(old_class, new_class, 1)
+else:
+    raise SystemExit('Game card class block not found')
+
+old_guard = '                    onClick={() => {\n                      if (game.slug === "palworld") {'
+new_guard = '                    onClick={() => {\n                      if (game.comingSoon || game.unavailable) return;\n                      if (game.slug === "palworld") {'
+if old_guard in s:
+    s = s.replace(old_guard, new_guard, 1)
 
 needle = '''                    <div className="catalog-number mono">\n                      {String(i + 1).padStart(2, "0")}\n                    </div>\n\n                    <h2>{game.title}</h2>'''
-replacement = '''                    <div className="catalog-number mono">\n                      {String(i + 1).padStart(2, "0")}\n                    </div>\n\n                    {(game.comingSoon || game.unavailable) && (\n                      <span className="unavailable-badge">{game.comingSoon ? 'COMING SOON' : 'NOT AVAILABLE'}</span>\n                    )}\n\n                    <h2>{game.title}</h2>'''
+replacement = '''                    <div className="catalog-number mono">\n                      {String(i + 1).padStart(2, "0")}\n                    </div>\n\n                    {(game.comingSoon || game.unavailable) && (\n                      <span className="unavailable-badge" style={{fontSize: '14px', padding: '11px 18px', color: '#ff5b5b', border: '1px solid rgba(248,113,113,.72)', background: 'rgba(127,29,29,.32)', boxShadow: '0 0 22px rgba(239,68,68,.18)'}}>\n                        {game.comingSoon ? 'COMING SOON' : 'NOT AVAILABLE'}\n                      </span>\n                    )}\n\n                    <h2>{game.title}</h2>'''
 if needle in s:
     s = s.replace(needle, replacement, 1)
 else:
-    raise SystemExit('GameServerPage card content block not found')
+    raise SystemExit('Game card content block not found')
 
-# Also protect the alternate catalog component if it is used by a future route.
-old2 = '''                  className="catalog-card reveal"\n                  key={game.slug}\n                  data-testid={`card-game-${game.slug}`}'''
-new2 = '''                  className={`catalog-card reveal ${game.comingSoon || game.unavailable ? 'unavailable-card' : ''}`}\n                  key={game.slug}\n                  aria-disabled={game.comingSoon || game.unavailable ? 'true' : undefined}\n                  onClick={(e) => { if (game.comingSoon || game.unavailable) e.preventDefault(); }}\n                  data-testid={`card-game-${game.slug}`}'''
-if old2 in s:
-    s = s.replace(old2, new2, 1)
+# Protect the alternate Link-based catalog as well.
+old_link = '''                  className="catalog-card reveal"\n                  key={game.slug}'''
+new_link = '''                  className={`catalog-card reveal ${game.comingSoon || game.unavailable ? 'unavailable-card' : ''}`}\n                  key={game.slug}'''
+if old_link in s:
+    s = s.replace(old_link, new_link, 1)
 
-needle2 = '''                  <div className="catalog-number mono">\n                    {String(index + 1).padStart(2, '0')}\n                  </div>\n\n                  {game.comingSoon && ('''
-replacement2 = '''                  <div className="catalog-number mono">\n                    {String(index + 1).padStart(2, '0')}\n                  </div>\n\n                  {(game.comingSoon || game.unavailable) && (\n                    <span className="unavailable-badge">{game.comingSoon ? 'COMING SOON' : 'NOT AVAILABLE'}</span>\n                  )}\n\n                  {game.comingSoon && ('''
-if needle2 in s:
-    s = s.replace(needle2, replacement2, 1)
+old_link_key = '''                  data-testid={`card-game-${game.slug}`}'''
+new_link_key = '''                  aria-disabled={game.comingSoon || game.unavailable ? 'true' : undefined}\n                  onClick={(e) => { if (game.comingSoon || game.unavailable) e.preventDefault(); }}\n                  data-testid={`card-game-${game.slug}`}'''
+if old_link_key in s:
+    s = s.replace(old_link_key, new_link_key, 1)
 
 APP.write_text(s, encoding='utf-8')
-print('ArveX fixes restored: VPS page + Coming Soon/Not Available behavior')
+print('ArveX game states and dedicated routes repaired')
