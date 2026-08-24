@@ -20,48 +20,103 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
     <style>
-      /* Homepage trust strip only: continuous marquee, preserving its existing content/icons. */
       .trust-strip { overflow: hidden; }
-      .trust-inner {
-        position: relative;
-        display: block;
-        overflow: hidden;
-        min-height: 70px;
-      }
-      .trust-inner > * {
-        position: absolute;
-        top: 50%;
-        left: 0;
-        margin: 0;
-        white-space: nowrap;
-        transform: translate3d(1160px, -50%, 0);
-        animation: arvexTrustMarquee 24s linear infinite;
-        will-change: transform;
-      }
+      .trust-inner { position: relative; display: block; overflow: hidden; min-height: 70px; }
+      .trust-inner > * { position: absolute; top: 50%; left: 0; margin: 0; white-space: nowrap; transform: translate3d(1160px, -50%, 0); animation: arvexTrustMarquee 24s linear infinite; will-change: transform; }
       .trust-inner > *:nth-child(1) { animation-delay: 0s; }
       .trust-inner > *:nth-child(2) { animation-delay: -4.8s; }
       .trust-inner > *:nth-child(3) { animation-delay: -9.6s; }
       .trust-inner > *:nth-child(4) { animation-delay: -14.4s; }
       .trust-inner > *:nth-child(5) { animation-delay: -19.2s; }
-      @keyframes arvexTrustMarquee {
-        from { transform: translate3d(1160px, -50%, 0); }
-        to { transform: translate3d(-260px, -50%, 0); }
-      }
-      @media (max-width: 1200px) {
-        .trust-inner > * { transform: translate3d(100vw, -50%, 0); }
-        @keyframes arvexTrustMarquee {
-          from { transform: translate3d(100vw, -50%, 0); }
-          to { transform: translate3d(-260px, -50%, 0); }
-        }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .trust-inner { display: flex; align-items: center; justify-content: space-between; overflow: visible; }
-        .trust-inner > * { position: static; transform: none; animation: none; }
-      }
+      @keyframes arvexTrustMarquee { from { transform: translate3d(1160px, -50%, 0); } to { transform: translate3d(-260px, -50%, 0); } }
+      @media (max-width: 1200px) { .trust-inner > * { transform: translate3d(100vw, -50%, 0); } @keyframes arvexTrustMarquee { from { transform: translate3d(100vw, -50%, 0); } to { transform: translate3d(-260px, -50%, 0); } } }
+      @media (prefers-reduced-motion: reduce) { .trust-inner { display: flex; align-items: center; justify-content: space-between; overflow: visible; } .trust-inner > * { position: static; transform: none; animation: none; } }
+
+      .coming-soon-card, .unavailable-card { position: relative !important; cursor: not-allowed !important; opacity: .86 !important; }
+      .coming-soon-card:hover, .unavailable-card:hover { transform: none !important; }
+      .coming-soon-badge, .unavailable-badge { position: absolute !important; top: 14px !important; right: 14px !important; z-index: 999 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; padding: 11px 18px !important; border-radius: 999px !important; font-family: monospace !important; font-size: 14px !important; font-weight: 800 !important; letter-spacing: .12em !important; line-height: 1 !important; white-space: nowrap !important; pointer-events: none !important; }
+      .coming-soon-badge { border: 1px solid rgba(248,113,113,.70) !important; background: rgba(127,29,29,.32) !important; color: #ff6b6b !important; box-shadow: 0 0 18px rgba(239,68,68,.18) !important; }
+      .unavailable-badge { border: 1px solid rgba(248,113,113,.72) !important; background: rgba(127,29,29,.32) !important; color: #ff5b5b !important; box-shadow: 0 0 22px rgba(239,68,68,.18) !important; }
     </style>
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      (function () {
+        const comingSoon = { terraria: 'Terraria', 'project-zomboid': 'Project Zomboid' };
+        const unavailable = { 'minecraft-bedrock': 'Minecraft Bedrock Edition' };
+        const dedicatedRoutes = { 'ark-survival-ascended': '/services/game-hosting/ark-survival-ascended', fivem: '/services/game-hosting/fivem' };
+
+        function getCards(slug) {
+          return Array.from(document.querySelectorAll('[data-testid="card-game-' + slug + '"], [data-testid="game-select-' + slug + '"]'));
+        }
+
+        function decorateStates() {
+          Object.keys(comingSoon).forEach(function (slug) {
+            getCards(slug).forEach(function (card) {
+              card.classList.add('coming-soon-card');
+              card.setAttribute('aria-disabled', 'true');
+              card.setAttribute('tabindex', '-1');
+              card.setAttribute('title', comingSoon[slug] + ' — Coming soon');
+              if (!card.querySelector('.coming-soon-badge')) {
+                const badge = document.createElement('span');
+                badge.className = 'coming-soon-badge';
+                badge.textContent = 'COMING SOON';
+                badge.setAttribute('aria-label', 'Coming soon');
+                card.appendChild(badge);
+              }
+            });
+          });
+
+          Object.keys(unavailable).forEach(function (slug) {
+            getCards(slug).forEach(function (card) {
+              card.classList.add('unavailable-card');
+              card.setAttribute('aria-disabled', 'true');
+              card.setAttribute('tabindex', '-1');
+              card.setAttribute('title', unavailable[slug] + ' — Not available');
+              if (!card.querySelector('.unavailable-badge')) {
+                const badge = document.createElement('span');
+                badge.className = 'unavailable-badge';
+                badge.textContent = 'NOT AVAILABLE';
+                badge.setAttribute('aria-label', 'Not available');
+                card.appendChild(badge);
+              }
+            });
+          });
+        }
+
+        function stop(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+        }
+
+        function handleGameNavigation(event) {
+          const target = event.target instanceof Element ? event.target : null;
+          if (!target) return;
+          const anchor = target.closest('a[href]');
+          const button = target.closest('button[data-testid]');
+          const href = anchor ? (anchor.getAttribute('href') || '') : '';
+          const testId = button ? (button.getAttribute('data-testid') || '') : '';
+
+          if (/\/services\/game-hosting\/(terraria|project-zomboid)(?:[/?#]|$)/i.test(href) || /^game-select-(terraria|project-zomboid)$/i.test(testId)) { stop(event); return; }
+          if (/\/services\/game-hosting\/minecraft-bedrock(?:[/?#]|$)/i.test(href) || /^game-select-minecraft-bedrock$/i.test(testId)) { stop(event); return; }
+
+          let route = null;
+          const routeMatch = href.match(/\/services\/game-hosting\/(ark-survival-ascended|fivem)(?:[/?#]|$)/i);
+          if (routeMatch) route = dedicatedRoutes[routeMatch[1].toLowerCase()];
+          const buttonMatch = testId.match(/^game-select-(ark-survival-ascended|fivem)$/i);
+          if (buttonMatch) route = dedicatedRoutes[buttonMatch[1].toLowerCase()];
+          if (route) { stop(event); window.location.assign(route); }
+        }
+
+        document.addEventListener('click', handleGameNavigation, true);
+        document.addEventListener('pointerup', handleGameNavigation, true);
+        document.addEventListener('auxclick', handleGameNavigation, true);
+        decorateStates();
+        new MutationObserver(decorateStates).observe(document.documentElement, { childList: true, subtree: true });
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
