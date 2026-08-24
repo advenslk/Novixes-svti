@@ -21,136 +21,68 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-      .coming-soon-card {
+      .coming-soon-card,.unavailable-card {
         position: relative !important;
         cursor: not-allowed !important;
         opacity: .86 !important;
-        border-color: rgba(248, 113, 113, .38) !important;
       }
-      .coming-soon-card:hover {
-        transform: none !important;
-        border-color: rgba(248, 113, 113, .55) !important;
-        box-shadow: 0 0 30px rgba(239, 68, 68, .10) !important;
+      .coming-soon-card { border-color: rgba(248, 113, 113, .38) !important; }
+      .coming-soon-card:hover { transform:none !important; border-color:rgba(248,113,113,.55) !important; box-shadow:0 0 30px rgba(239,68,68,.10) !important; }
+      .coming-soon-badge,.unavailable-badge {
+        position:absolute !important; top:14px !important; right:14px !important; z-index:999 !important;
+        display:inline-flex !important; align-items:center !important; justify-content:center !important;
+        padding:8px 13px !important; border-radius:999px !important; font-family:monospace !important;
+        font-size:11px !important; font-weight:800 !important; letter-spacing:.12em !important;
+        line-height:1 !important; white-space:nowrap !important; pointer-events:none !important;
       }
-      .coming-soon-badge {
-        position: absolute !important;
-        top: 14px !important;
-        right: 14px !important;
-        z-index: 999 !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 6px 10px !important;
-        border: 1px solid rgba(248, 113, 113, .70) !important;
-        border-radius: 999px !important;
-        background: rgba(127, 29, 29, .32) !important;
-        color: #ff6b6b !important;
-        font-family: monospace !important;
-        font-size: 9px !important;
-        font-weight: 800 !important;
-        letter-spacing: .13em !important;
-        line-height: 1 !important;
-        white-space: nowrap !important;
-        box-shadow: 0 0 18px rgba(239, 68, 68, .18) !important;
-        pointer-events: none !important;
-      }
+      .coming-soon-badge { border:1px solid rgba(248,113,113,.70) !important; background:rgba(127,29,29,.32) !important; color:#ff6b6b !important; box-shadow:0 0 18px rgba(239,68,68,.18) !important; }
+      .unavailable-card { border-color:rgba(248,113,113,.42) !important; }
+      .unavailable-card:hover { transform:none !important; border-color:rgba(248,113,113,.60) !important; box-shadow:0 0 30px rgba(239,68,68,.12) !important; }
+      .unavailable-badge { border:1px solid rgba(248,113,113,.75) !important; background:rgba(127,29,29,.38) !important; color:#ff6b6b !important; box-shadow:0 0 20px rgba(239,68,68,.20) !important; }
     </style>
   </head>
   <body>
     <div id="root"></div>
     <script>
       (function () {
-        const comingSoon = {
-          terraria: 'Terraria',
-          'project-zomboid': 'Project Zomboid'
-        };
+        const comingSoon = { terraria:'Terraria', 'project-zomboid':'Project Zomboid' };
+        const unavailable = { 'minecraft-bedrock':'Minecraft Bedrock Edition' };
+        const dedicatedRoutes = { 'ark-survival-ascended':'/services/game-hosting/ark-survival-ascended', fivem:'/services/game-hosting/fivem' };
 
-        const dedicatedRoutes = {
-          'ark-survival-ascended': '/services/game-hosting/ark-survival-ascended',
-          fivem: '/services/game-hosting/fivem'
-        };
-
-        function getCard(slug) {
-          return Array.from(document.querySelectorAll(
-            '[data-testid="card-game-' + slug + '"], ' +
-            '[data-testid="game-select-' + slug + '"]'
-          ));
+        function getCards(slug) {
+          return Array.from(document.querySelectorAll('[data-testid="card-game-' + slug + '"], [data-testid="game-select-' + slug + '"]'));
         }
-
-        function decorateComingSoon() {
-          Object.keys(comingSoon).forEach(function (slug) {
-            getCard(slug).forEach(function (card) {
-              card.classList.add('coming-soon-card');
-              card.setAttribute('aria-disabled', 'true');
-              card.setAttribute('tabindex', '-1');
-              card.setAttribute('title', comingSoon[slug] + ' — Coming soon');
-
-              if (!card.querySelector('.coming-soon-badge')) {
-                const badge = document.createElement('span');
-                badge.className = 'coming-soon-badge';
-                badge.textContent = 'COMING SOON';
-                badge.setAttribute('aria-label', 'Coming soon');
-                card.appendChild(badge);
-              }
+        function decorate() {
+          Object.keys(comingSoon).forEach(function(slug) {
+            getCards(slug).forEach(function(card) {
+              card.classList.add('coming-soon-card'); card.setAttribute('aria-disabled','true'); card.setAttribute('tabindex','-1');
+              card.setAttribute('title',comingSoon[slug]+' — Coming soon');
+              if (!card.querySelector('.coming-soon-badge')) { const b=document.createElement('span'); b.className='coming-soon-badge'; b.textContent='COMING SOON'; card.appendChild(b); }
+            });
+          });
+          Object.keys(unavailable).forEach(function(slug) {
+            getCards(slug).forEach(function(card) {
+              card.classList.add('unavailable-card'); card.setAttribute('aria-disabled','true'); card.setAttribute('tabindex','-1');
+              card.setAttribute('title',unavailable[slug]+' — No available');
+              if (!card.querySelector('.unavailable-badge')) { const b=document.createElement('span'); b.className='unavailable-badge'; b.textContent='NO AVAILABLE'; b.setAttribute('aria-label','No available'); card.appendChild(b); }
             });
           });
         }
-
-        function stop(event) {
-          event.preventDefault();
-          event.stopPropagation();
-          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-        }
-
+        function stop(event) { event.preventDefault(); event.stopPropagation(); if(event.stopImmediatePropagation) event.stopImmediatePropagation(); }
         function handleGameNavigation(event) {
-          const target = event.target instanceof Element ? event.target : null;
-          if (!target) return;
-
-          const anchor = target.closest('a[href]');
-          const button = target.closest('button[data-testid]');
-
-          const href = anchor ? (anchor.getAttribute('href') || '') : '';
-          const testId = button ? (button.getAttribute('data-testid') || '') : '';
-
-          // Terraria / Project Zomboid: never allow navigation, whether the
-          // card is rendered as a Wouter Link or as a button.
-          if (
-            /\/services\/game-hosting\/(terraria|project-zomboid)(?:[/?#]|$)/i.test(href) ||
-            /^game-select-(terraria|project-zomboid)$/i.test(testId)
-          ) {
-            stop(event);
-            return;
-          }
-
-          // ARK ASA / FiveM: force the real dedicated route even when the
-          // game selector is rendered as a button and React would otherwise
-          // open its generic in-page selector.
-          let route = null;
-
-          const routeMatch = href.match(
-            /\/services\/game-hosting\/(ark-survival-ascended|fivem)(?:[/?#]|$)/i
-          );
-          if (routeMatch) route = dedicatedRoutes[routeMatch[1].toLowerCase()];
-
-          const buttonMatch = testId.match(/^game-select-(ark-survival-ascended|fivem)$/i);
-          if (buttonMatch) route = dedicatedRoutes[buttonMatch[1].toLowerCase()];
-
-          if (route) {
-            stop(event);
-            window.location.assign(route);
-          }
+          const target=event.target instanceof Element ? event.target : null; if(!target) return;
+          const anchor=target.closest('a[href]'); const button=target.closest('button[data-testid]');
+          const href=anchor ? (anchor.getAttribute('href')||'') : ''; const testId=button ? (button.getAttribute('data-testid')||'') : '';
+          if (/\/services\/game-hosting\/(terraria|project-zomboid|minecraft-bedrock)(?:[/?#]|$)/i.test(href) || /^game-select-(terraria|project-zomboid|minecraft-bedrock)$/i.test(testId)) { stop(event); return; }
+          let route=null;
+          const routeMatch=href.match(/\/services\/game-hosting\/(ark-survival-ascended|fivem)(?:[/?#]|$)/i); if(routeMatch) route=dedicatedRoutes[routeMatch[1].toLowerCase()];
+          const buttonMatch=testId.match(/^game-select-(ark-survival-ascended|fivem)$/i); if(buttonMatch) route=dedicatedRoutes[buttonMatch[1].toLowerCase()];
+          if(route) { stop(event); window.location.assign(route); }
         }
-
-        // Capture phase runs before Wouter/React click handlers.
-        document.addEventListener('click', handleGameNavigation, true);
-        document.addEventListener('pointerup', handleGameNavigation, true);
-        document.addEventListener('auxclick', handleGameNavigation, true);
-
-        decorateComingSoon();
-        new MutationObserver(decorateComingSoon).observe(document.documentElement, {
-          childList: true,
-          subtree: true
-        });
+        document.addEventListener('click',handleGameNavigation,true);
+        document.addEventListener('pointerup',handleGameNavigation,true);
+        document.addEventListener('auxclick',handleGameNavigation,true);
+        decorate(); new MutationObserver(decorate).observe(document.documentElement,{childList:true,subtree:true});
       })();
     </script>
     <script type="module" src="/src/main.tsx"></script>
