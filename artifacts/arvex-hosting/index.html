@@ -18,13 +18,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     <title>ArveX Hosting</title>
     <meta name="description" content="ArveX Hosting — Premium game, VPS, VDS, web and bot hosting built for performance, reliability and security." />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+      /* ArveX — Coming Soon game cards */
+      .coming-soon-card {
+        position: relative !important;
+        cursor: not-allowed !important;
+        opacity: .82;
+        border-color: rgba(248, 113, 113, .30) !important;
+        background: linear-gradient(145deg, rgba(127, 29, 29, .11), rgba(15, 15, 20, .72)) !important;
+      }
+      .coming-soon-card:hover {
+        transform: none !important;
+        border-color: rgba(248, 113, 113, .42) !important;
+        box-shadow: 0 0 30px rgba(239, 68, 68, .09) !important;
+      }
+      .coming-soon-badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        z-index: 20;
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border: 1px solid rgba(248, 113, 113, .52);
+        border-radius: 999px;
+        background: rgba(127, 29, 29, .24);
+        color: #f87171;
+        font-family: var(--app-font-mono, monospace);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: .13em;
+        line-height: 1;
+        box-shadow: 0 0 18px rgba(239, 68, 68, .12);
+      }
+      [data-testid="game-select-terraria"],
+      [data-testid="game-select-project-zomboid"] {
+        cursor: not-allowed !important;
+      }
+      @supports selector(a:has(.coming-soon-badge)) {
+        a:has(.coming-soon-badge) {
+          pointer-events: none !important;
+          cursor: not-allowed !important;
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      /* ArveX game-card guard + dedicated-page routing.
+         Event delegation keeps this working across React re-renders. */
+      document.addEventListener('click', function (event) {
+        const target = event.target instanceof Element ? event.target : null;
+        if (!target) return;
+
+        const card = target.closest('[data-testid^="game-select-"]');
+        if (card) {
+          const id = card.getAttribute('data-testid') || '';
+
+          if (id === 'game-select-terraria' || id === 'game-select-project-zomboid') {
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+          }
+
+          if (id === 'game-select-ark-survival-ascended') {
+            event.preventDefault();
+            event.stopPropagation();
+            window.history.pushState({}, '', '/services/game-hosting/ark-survival-ascended');
+            window.dispatchEvent(new PopStateEvent('popstate'));
+            return;
+          }
+
+          if (id === 'game-select-fivem') {
+            event.preventDefault();
+            event.stopPropagation();
+            window.history.pushState({}, '', '/services/game-hosting/fivem');
+            window.dispatchEvent(new PopStateEvent('popstate'));
+            return;
+          }
+        }
+
+        const link = target.closest('a[href]');
+        if (link) {
+          const href = link.getAttribute('href') || '';
+          if (/\/services\/game-hosting\/(terraria|project-zomboid)(?:[/?#]|$)/i.test(href)) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }
+      }, true);
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
