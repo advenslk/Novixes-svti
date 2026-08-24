@@ -19,6 +19,46 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      /* Homepage trust strip only: continuous marquee, preserving its existing content/icons. */
+      .trust-strip { overflow: hidden; }
+      .trust-inner {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        min-height: 70px;
+      }
+      .trust-inner > * {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        margin: 0;
+        white-space: nowrap;
+        transform: translate3d(1160px, -50%, 0);
+        animation: arvexTrustMarquee 24s linear infinite;
+        will-change: transform;
+      }
+      .trust-inner > *:nth-child(1) { animation-delay: 0s; }
+      .trust-inner > *:nth-child(2) { animation-delay: -4.8s; }
+      .trust-inner > *:nth-child(3) { animation-delay: -9.6s; }
+      .trust-inner > *:nth-child(4) { animation-delay: -14.4s; }
+      .trust-inner > *:nth-child(5) { animation-delay: -19.2s; }
+      @keyframes arvexTrustMarquee {
+        from { transform: translate3d(1160px, -50%, 0); }
+        to { transform: translate3d(-260px, -50%, 0); }
+      }
+      @media (max-width: 1200px) {
+        .trust-inner > * { transform: translate3d(100vw, -50%, 0); }
+        @keyframes arvexTrustMarquee {
+          from { transform: translate3d(100vw, -50%, 0); }
+          to { transform: translate3d(-260px, -50%, 0); }
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .trust-inner { display: flex; align-items: center; justify-content: space-between; overflow: visible; }
+        .trust-inner > * { position: static; transform: none; animation: none; }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
