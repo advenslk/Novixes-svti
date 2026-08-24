@@ -60,65 +60,97 @@
     <div id="root"></div>
     <script>
       (function () {
-        const comingSoon = ['terraria', 'project-zomboid'];
-        const dedicatedRoutes = ['fivem', 'ark-survival-ascended'];
+        const comingSoon = {
+          terraria: 'Terraria',
+          'project-zomboid': 'Project Zomboid'
+        };
 
-        function findCards(slug, label) {
-          const exact = document.querySelectorAll(
-            '[data-testid="card-game-' + slug + '"], [data-testid="game-select-' + slug + '"]'
-          );
-          if (exact.length) return Array.from(exact);
-          return Array.from(document.querySelectorAll('a, button')).filter(function (el) {
-            const text = (el.textContent || '').replace(/\s+/g, ' ').trim();
-            return text.includes(label);
-          });
+        const dedicatedRoutes = {
+          'ark-survival-ascended': '/services/game-hosting/ark-survival-ascended',
+          fivem: '/services/game-hosting/fivem'
+        };
+
+        function getCard(slug) {
+          return Array.from(document.querySelectorAll(
+            '[data-testid="card-game-' + slug + '"], ' +
+            '[data-testid="game-select-' + slug + '"]'
+          ));
         }
 
-        function decorate() {
-          const labels = { terraria: 'Terraria', 'project-zomboid': 'Project Zomboid' };
-          comingSoon.forEach(function (slug) {
-            findCards(slug, labels[slug]).forEach(function (card) {
+        function decorateComingSoon() {
+          Object.keys(comingSoon).forEach(function (slug) {
+            getCard(slug).forEach(function (card) {
               card.classList.add('coming-soon-card');
               card.setAttribute('aria-disabled', 'true');
-              card.setAttribute('title', labels[slug] + ' — Coming soon');
+              card.setAttribute('tabindex', '-1');
+              card.setAttribute('title', comingSoon[slug] + ' — Coming soon');
+
               if (!card.querySelector('.coming-soon-badge')) {
                 const badge = document.createElement('span');
                 badge.className = 'coming-soon-badge';
                 badge.textContent = 'COMING SOON';
+                badge.setAttribute('aria-label', 'Coming soon');
                 card.appendChild(badge);
               }
             });
           });
         }
 
-        function intercept(event) {
+        function stop(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+        }
+
+        function handleGameNavigation(event) {
           const target = event.target instanceof Element ? event.target : null;
           if (!target) return;
-          const link = target.closest('a[href]');
-          if (!link) return;
-          const href = link.getAttribute('href') || '';
 
-          if (/\/services\/game-hosting\/(terraria|project-zomboid)(?:[/?#]|$)/i.test(href)) {
-            event.preventDefault();
-            event.stopPropagation();
-            if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          const anchor = target.closest('a[href]');
+          const button = target.closest('button[data-testid]');
+
+          const href = anchor ? (anchor.getAttribute('href') || '') : '';
+          const testId = button ? (button.getAttribute('data-testid') || '') : '';
+
+          // Terraria / Project Zomboid: never allow navigation, whether the
+          // card is rendered as a Wouter Link or as a button.
+          if (
+            /\/services\/game-hosting\/(terraria|project-zomboid)(?:[/?#]|$)/i.test(href) ||
+            /^game-select-(terraria|project-zomboid)$/i.test(testId)
+          ) {
+            stop(event);
             return;
           }
 
-          const match = href.match(/^\/services\/game-hosting\/(fivem|ark-survival-ascended)\/?$/i);
-          if (match) {
-            event.preventDefault();
-            event.stopPropagation();
-            if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-            window.location.assign('/services/game-hosting/' + match[1].toLowerCase());
+          // ARK ASA / FiveM: force the real dedicated route even when the
+          // game selector is rendered as a button and React would otherwise
+          // open its generic in-page selector.
+          let route = null;
+
+          const routeMatch = href.match(
+            /\/services\/game-hosting\/(ark-survival-ascended|fivem)(?:[/?#]|$)/i
+          );
+          if (routeMatch) route = dedicatedRoutes[routeMatch[1].toLowerCase()];
+
+          const buttonMatch = testId.match(/^game-select-(ark-survival-ascended|fivem)$/i);
+          if (buttonMatch) route = dedicatedRoutes[buttonMatch[1].toLowerCase()];
+
+          if (route) {
+            stop(event);
+            window.location.assign(route);
           }
         }
 
-        document.addEventListener('click', intercept, true);
-        document.addEventListener('pointerdown', intercept, true);
-        document.addEventListener('auxclick', intercept, true);
-        decorate();
-        new MutationObserver(decorate).observe(document.documentElement, { childList: true, subtree: true });
+        // Capture phase runs before Wouter/React click handlers.
+        document.addEventListener('click', handleGameNavigation, true);
+        document.addEventListener('pointerup', handleGameNavigation, true);
+        document.addEventListener('auxclick', handleGameNavigation, true);
+
+        decorateComingSoon();
+        new MutationObserver(decorateComingSoon).observe(document.documentElement, {
+          childList: true,
+          subtree: true
+        });
       })();
     </script>
     <script type="module" src="/src/main.tsx"></script>
