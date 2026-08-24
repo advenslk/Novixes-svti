@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -16,133 +16,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     <title>ArveX Hosting</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-
-    <style>
-      .coming-soon-card,.unavailable-card { position:relative!important; cursor:not-allowed!important; opacity:.86!important; }
-      .coming-soon-card { border-color:rgba(248,113,113,.38)!important; }
-      .coming-soon-card:hover { transform:none!important; border-color:rgba(248,113,113,.55)!important; box-shadow:0 0 30px rgba(239,68,68,.10)!important; }
-      .coming-soon-badge,.unavailable-badge { position:absolute!important; top:14px!important; right:14px!important; z-index:999!important; display:inline-flex!important; align-items:center!important; justify-content:center!important; padding:11px 18px!important; border-radius:999px!important; font-family:monospace!important; font-size:14px!important; font-weight:800!important; letter-spacing:.12em!important; line-height:1!important; white-space:nowrap!important; pointer-events:none!important; }
-      .coming-soon-badge { border:1px solid rgba(248,113,113,.70)!important; background:rgba(127,29,29,.32)!important; color:#ff6b6b!important; box-shadow:0 0 18px rgba(239,68,68,.18)!important; }
-      .unavailable-card { border-color:rgba(248,113,113,.42)!important; }
-      .unavailable-card:hover { transform:none!important; border-color:rgba(248,113,113,.60)!important; box-shadow:0 0 30px rgba(239,68,68,.12)!important; }
-      .unavailable-badge { border:1px solid rgba(248,113,113,.75)!important; background:rgba(127,29,29,.38)!important; color:#ff6b6b!important; box-shadow:0 0 20px rgba(239,68,68,.20)!important; }
-
-      .vps-page { min-height:100vh; background:#08090d; color:#f5f5f5; padding:72px 24px 90px; font-family:Inter,system-ui,sans-serif; }
-      .vps-wrap { max-width:1180px; margin:0 auto; }
-      .vps-back { display:inline-flex; align-items:center; gap:8px; color:#9ca3af; text-decoration:none; font:700 12px/1 JetBrains Mono,monospace; letter-spacing:.08em; margin-bottom:34px; }
-      .vps-back:hover { color:#fff; }
-      .vps-eyebrow { color:#67e8f9; font:700 12px/1 JetBrains Mono,monospace; letter-spacing:.16em; text-transform:uppercase; margin:0 0 18px; }
-      .vps-hero h1 { margin:0; max-width:850px; font-size:clamp(38px,6vw,76px); line-height:.98; letter-spacing:-.045em; }
-      .vps-hero h1 em { color:#67e8f9; font-style:normal; }
-      .vps-hero-copy { max-width:760px; color:#a1a1aa; font-size:17px; line-height:1.7; margin:24px 0 0; }
-      .vps-highlights { display:flex; flex-wrap:wrap; gap:10px; margin-top:28px; }
-      .vps-highlights span { border:1px solid #27272a; background:#111217; border-radius:999px; padding:9px 13px; color:#d4d4d8; font-size:12px; }
-      .vps-divider { height:1px; background:linear-gradient(90deg,rgba(103,232,249,.45),rgba(255,255,255,.06),transparent); margin:56px 0 34px; }
-      .vps-section-title { display:flex; align-items:end; justify-content:space-between; gap:20px; margin-bottom:22px; }
-      .vps-section-title h2 { margin:0; font-size:28px; letter-spacing:-.025em; }
-      .vps-section-title span { color:#71717a; font:700 11px/1 JetBrains Mono,monospace; letter-spacing:.12em; }
-      .vps-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
-      .vps-card { position:relative; overflow:hidden; background:linear-gradient(145deg,#111319,#0c0d11); border:1px solid #27292f; border-radius:18px; padding:24px; transition:.2s ease; }
-      .vps-card:hover { transform:translateY(-3px); border-color:rgba(103,232,249,.45); box-shadow:0 18px 45px rgba(0,0,0,.28),0 0 35px rgba(103,232,249,.06); }
-      .vps-card.featured { border-color:rgba(103,232,249,.42); box-shadow:0 0 35px rgba(103,232,249,.07); }
-      .vps-card.featured:before { content:'POPULAR'; position:absolute; top:0; right:0; padding:7px 12px; border-radius:0 18px 0 12px; background:rgba(103,232,249,.13); color:#67e8f9; font:800 9px/1 JetBrains Mono,monospace; letter-spacing:.12em; }
-      .vps-name { color:#67e8f9; font:800 13px/1 JetBrains Mono,monospace; letter-spacing:.08em; }
-      .vps-price { margin:14px 0 20px; font-size:30px; font-weight:800; letter-spacing:-.03em; }
-      .vps-price small { color:#71717a; font-size:12px; font-weight:600; letter-spacing:0; }
-      .vps-specs { display:grid; gap:10px; padding-top:18px; border-top:1px solid #24262c; }
-      .vps-spec { display:flex; justify-content:space-between; gap:14px; font-size:13px; }
-      .vps-spec span:first-child { color:#71717a; }
-      .vps-spec span:last-child { color:#e4e4e7; text-align:right; font-weight:600; }
-      .vps-order { display:block; text-align:center; margin-top:22px; padding:11px 14px; border:1px solid #30323a; border-radius:10px; color:#e4e4e7; text-decoration:none; font-size:12px; font-weight:800; letter-spacing:.08em; }
-      .vps-order:hover { border-color:#67e8f9; color:#67e8f9; }
-      .vps-included { margin-top:55px; padding:28px; border:1px solid #27292f; border-radius:18px; background:#0d0f13; }
-      .vps-included h2 { margin:0 0 22px; font-size:25px; }
-      .vps-features { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px 26px; }
-      .vps-feature { color:#d4d4d8; font-size:14px; padding:11px 0; border-bottom:1px solid #202228; }
-      .vps-feature:before { content:'✓'; color:#67e8f9; font-weight:800; margin-right:10px; }
-      .vps-footer { margin-top:42px; text-align:center; color:#71717a; font:700 12px/1.7 JetBrains Mono,monospace; letter-spacing:.08em; }
-      .vps-footer strong { display:block; color:#e4e4e7; font-size:14px; margin-bottom:5px; }
-      @media(max-width:900px){ .vps-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.vps-features{grid-template-columns:repeat(2,minmax(0,1fr));} }
-      @media(max-width:620px){ .vps-page{padding:42px 16px 60px}.vps-grid,.vps-features{grid-template-columns:1fr}.vps-section-title{display:block}.vps-section-title span{display:block;margin-top:8px}.vps-hero h1{font-size:43px}.vps-card{padding:21px}.vps-included{padding:22px 18px} }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div id="root"></div>
-    <script>
-      (function () {
-        const isVpsPage = /^\/services\/vps\/?$/i.test(window.location.pathname);
-        const root = document.getElementById('root');
-
-        if (isVpsPage) {
-          const plans = [
-            ['ARX-VPS 2GB','680','2 GB','1 vCore','40 GB NVMe SSD'],
-            ['ARX-VPS 4GB','1,350','4 GB','2 vCore','80 GB NVMe SSD'],
-            ['ARX-VPS 6GB','1,950','6 GB','3 vCore','120 GB NVMe SSD'],
-            ['ARX-VPS 8GB','2,650','8 GB','4 vCore','160 GB NVMe SSD'],
-            ['ARX-VPS 12GB','3,850','12 GB','6 vCore','240 GB NVMe SSD'],
-            ['ARX-VPS 16GB','5,200','16 GB','8 vCore','320 GB NVMe SSD'],
-            ['ARX-VPS 24GB','7,250','24 GB','10 vCore','480 GB NVMe SSD'],
-            ['ARX-VPS 32GB','9,500','32 GB','12 vCore','640 GB NVMe SSD'],
-            ['ARX-VPS 48GB','14,250','48 GB','16 vCore','960 GB NVMe SSD'],
-            ['ARX-VPS 64GB','18,500','64 GB','20 vCore','1.28 TB NVMe SSD'],
-            ['ARX-VPS 96GB','24,000','96 GB','28 vCore','1.92 TB NVMe SSD'],
-            ['ARX-VPS 128GB','29,000','128 GB','32 vCore','2.56 TB NVMe SSD']
-          ];
-          root.innerHTML = `
-            <main class="vps-page">
-              <div class="vps-wrap">
-                <a class="vps-back" href="/services">← ALL SERVICES</a>
-                <section class="vps-hero">
-                  <p class="vps-eyebrow">ARVEX HOSTING — CLOUD VPS</p>
-                  <h1>Powerful Cloud VPS Infrastructure <em>For Every Project</em></h1>
-                  <p class="vps-hero-copy">High-Performance CPU • NVMe SSD • Full Root Access • DDoS Protection</p>
-                  <div class="vps-highlights"><span>Full Root / Administrator Access</span><span>Dedicated IPv4</span><span>Unmetered Bandwidth</span><span>Instant Deployment</span><span>24/7 Monitoring</span></div>
-                </section>
-                <div class="vps-divider"></div>
-                <div class="vps-section-title"><h2>Cloud VPS Plans</h2><span>MONTHLY BILLING · LKR</span></div>
-                <section class="vps-grid">
-                  ${plans.map((p,i)=>`<article class="vps-card ${i===3?'featured':''}"><div class="vps-name">${p[0]}</div><div class="vps-price">LKR ${p[1]} <small>/ Month</small></div><div class="vps-specs"><div class="vps-spec"><span>RAM</span><span>${p[2]}</span></div><div class="vps-spec"><span>CPU</span><span>${p[3]}</span></div><div class="vps-spec"><span>Storage</span><span>${p[4]}</span></div><div class="vps-spec"><span>Bandwidth</span><span>Unmetered</span></div><div class="vps-spec"><span>IPv4</span><span>1 Dedicated IPv4</span></div></div><a class="vps-order" href="/support">ORDER / CONTACT</a></article>`).join('')}
-                </section>
-                <section class="vps-included">
-                  <h2>Included With Every VPS</h2>
-                  <div class="vps-features">
-                    <div class="vps-feature">Full Root / Administrator Access</div><div class="vps-feature">NVMe SSD Storage</div><div class="vps-feature">Dedicated IPv4 Address</div>
-                    <div class="vps-feature">DDoS Protection</div><div class="vps-feature">Multiple Linux OS Options</div><div class="vps-feature">OS Reinstallation</div>
-                    <div class="vps-feature">Instant Deployment</div><div class="vps-feature">Virtualization Isolation</div><div class="vps-feature">Full VPS Control</div>
-                    <div class="vps-feature">24/7 Server Monitoring</div><div class="vps-feature">Network Protection</div><div class="vps-feature">Easy Upgrades</div><div class="vps-feature">Discord Support</div>
-                  </div>
-                </section>
-                <footer class="vps-footer"><strong>ARVEX HOSTING</strong>Cloud Infrastructure. Built For Performance.</footer>
-              </div>
-            </main>`;
-          return;
-        }
-
-        const comingSoon = { terraria:'Terraria', 'project-zomboid':'Project Zomboid' };
-        const unavailable = { 'minecraft-bedrock':'Minecraft Bedrock Edition' };
-        const dedicatedRoutes = { 'ark-survival-ascended':'/services/game-hosting/ark-survival-ascended', fivem:'/services/game-hosting/fivem' };
-        function getCards(slug) { return Array.from(document.querySelectorAll('[data-testid="card-game-' + slug + '"], [data-testid="game-select-' + slug + '"]')); }
-        function decorate() {
-          Object.keys(comingSoon).forEach(function(slug) { getCards(slug).forEach(function(card) { card.classList.add('coming-soon-card'); card.setAttribute('aria-disabled','true'); card.setAttribute('tabindex','-1'); card.setAttribute('title',comingSoon[slug]+' — Coming soon'); if (!card.querySelector('.coming-soon-badge')) { const b=document.createElement('span'); b.className='coming-soon-badge'; b.textContent='COMING SOON'; card.appendChild(b); } }); });
-          Object.keys(unavailable).forEach(function(slug) { getCards(slug).forEach(function(card) { card.classList.add('unavailable-card'); card.setAttribute('aria-disabled','true'); card.setAttribute('tabindex','-1'); card.setAttribute('title',unavailable[slug]+' — No available'); if (!card.querySelector('.unavailable-badge')) { const b=document.createElement('span'); b.className='unavailable-badge'; b.textContent='NO AVAILABLE'; b.setAttribute('aria-label','No available'); card.appendChild(b); } }); });
-        }
-        function stop(event) { event.preventDefault(); event.stopPropagation(); if(event.stopImmediatePropagation) event.stopImmediatePropagation(); }
-        function handleGameNavigation(event) {
-          const target=event.target instanceof Element ? event.target : null; if(!target) return;
-          const anchor=target.closest('a[href]'); const button=target.closest('button[data-testid]');
-          const href=anchor ? (anchor.getAttribute('href')||'') : ''; const testId=button ? (button.getAttribute('data-testid')||'') : '';
-          if (/\/services\/game-hosting\/(terraria|project-zomboid|minecraft-bedrock)(?:[/?#]|$)/i.test(href) || /^game-select-(terraria|project-zomboid|minecraft-bedrock)$/i.test(testId)) { stop(event); return; }
-          let route=null; const routeMatch=href.match(/\/services\/game-hosting\/(ark-survival-ascended|fivem)(?:[/?#]|$)/i); if(routeMatch) route=dedicatedRoutes[routeMatch[1].toLowerCase()];
-          const buttonMatch=testId.match(/^game-select-(ark-survival-ascended|fivem)$/i); if(buttonMatch) route=dedicatedRoutes[buttonMatch[1].toLowerCase()];
-          if(route) { stop(event); window.location.assign(route); }
-        }
-        document.addEventListener('click',handleGameNavigation,true); document.addEventListener('pointerup',handleGameNavigation,true); document.addEventListener('auxclick',handleGameNavigation,true);
-        decorate(); new MutationObserver(decorate).observe(document.documentElement,{childList:true,subtree:true});
-        const script=document.createElement('script'); script.type='module'; script.src='/src/main.tsx'; document.body.appendChild(script);
-      })();
-    </script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
