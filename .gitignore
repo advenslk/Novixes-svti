@@ -54,3 +54,11 @@ Thumbs.db
 src/App.tsx.*
 Palworld
 vite
+
+.env
+*.pem
+*.key
+artifacts/arvex-hosting/src/App.tsx.*
+artifacts/arvex-hosting/PY
+artifacts/arvex-hosting/Palworld
+artifacts/arvex-hosting/vite
