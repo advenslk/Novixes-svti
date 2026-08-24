@@ -73,46 +73,62 @@
     <script>
       /* ArveX game-card guard + dedicated-page routing.
          Event delegation keeps this working across React re-renders. */
-      document.addEventListener('click', function (event) {
-        const target = event.target instanceof Element ? event.target : null;
-        if (!target) return;
+      (function () {
+        const comingSoonGames = new Set(['terraria', 'project-zomboid']);
 
-        const card = target.closest('[data-testid^="game-select-"]');
-        if (card) {
-          const id = card.getAttribute('data-testid') || '';
+        function decorateGameCards() {
+          comingSoonGames.forEach(function (slug) {
+            const card = document.querySelector('[data-testid="card-game-' + slug + '"]');
+            if (!card) return;
 
-          if (id === 'game-select-terraria' || id === 'game-select-project-zomboid') {
+            card.classList.add('coming-soon-card');
+            card.setAttribute('aria-disabled', 'true');
+            card.setAttribute('title', 'Coming soon');
+
+            if (!card.querySelector('.coming-soon-badge')) {
+              const badge = document.createElement('span');
+              badge.className = 'coming-soon-badge';
+              badge.textContent = 'COMING SOON';
+              badge.setAttribute('aria-label', 'Coming soon');
+              card.appendChild(badge);
+            }
+          });
+        }
+
+        function blockComingSoon(event) {
+          const target = event.target instanceof Element ? event.target : null;
+          if (!target) return;
+
+          const card = target.closest('[data-testid="card-game-terraria"], [data-testid="card-game-project-zomboid"]');
+          if (card) {
             event.preventDefault();
             event.stopPropagation();
-            return;
+            if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+            return false;
           }
 
-          if (id === 'game-select-ark-survival-ascended') {
-            event.preventDefault();
-            event.stopPropagation();
-            window.history.pushState({}, '', '/services/game-hosting/ark-survival-ascended');
-            window.dispatchEvent(new PopStateEvent('popstate'));
-            return;
-          }
-
-          if (id === 'game-select-fivem') {
-            event.preventDefault();
-            event.stopPropagation();
-            window.history.pushState({}, '', '/services/game-hosting/fivem');
-            window.dispatchEvent(new PopStateEvent('popstate'));
-            return;
+          const link = target.closest('a[href]');
+          if (link) {
+            const href = link.getAttribute('href') || '';
+            if (/\/services\/game-hosting\/(terraria|project-zomboid)(?:[/?#]|$)/i.test(href)) {
+              event.preventDefault();
+              event.stopPropagation();
+              if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+              return false;
+            }
           }
         }
 
-        const link = target.closest('a[href]');
-        if (link) {
-          const href = link.getAttribute('href') || '';
-          if (/\/services\/game-hosting\/(terraria|project-zomboid)(?:[/?#]|$)/i.test(href)) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
-        }
-      }, true);
+        document.addEventListener('click', blockComingSoon, true);
+        document.addEventListener('pointerdown', blockComingSoon, true);
+        document.addEventListener('auxclick', blockComingSoon, true);
+
+        decorateGameCards();
+        new MutationObserver(decorateGameCards).observe(document.documentElement, {
+          childList: true,
+          subtree: true
+        });
+      })();
     </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
