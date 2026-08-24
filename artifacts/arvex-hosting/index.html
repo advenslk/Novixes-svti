@@ -4,130 +4,129 @@
     <meta charset="UTF-8" />
     <meta name="description" content="ArveX Hosting — Premium game, VPS, VDS, web and bot hosting built for performance, reliability and security." />
     <meta name="robots" content="index, follow" />
-
     <meta property="og:title" content="ArveX Hosting — Premium Hosting Solutions" />
     <meta property="og:description" content="Premium Game Hosting, VPS, VDS, Web Hosting and Bot Hosting — fast, reliable and secure." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.arvex.host/" />
     <meta property="og:image" content="https://www.image2url.com/r2/default/images/1787490812520-11e21f1c-3268-49d1-a926-9321a740b8e3.png" />
-
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="ArveX Hosting — Premium Hosting Solutions" />
     <meta name="twitter:description" content="Premium Game Hosting, VPS, VDS, Web Hosting and Bot Hosting — fast, reliable and secure." />
     <meta name="twitter:image" content="https://www.image2url.com/r2/default/images/1787490812520-11e21f1c-3268-49d1-a926-9321a740b8e3.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     <title>ArveX Hosting</title>
-    <meta name="description" content="ArveX Hosting — Premium game, VPS, VDS, web and bot hosting built for performance, reliability and security." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-      /* ArveX — Coming Soon game cards */
+      /* ArveX — Coming Soon game cards. Intentionally plain CSS so this does not depend on Tailwind. */
       .coming-soon-card {
         position: relative !important;
         cursor: not-allowed !important;
-        opacity: .82;
-        border-color: rgba(248, 113, 113, .30) !important;
-        background: linear-gradient(145deg, rgba(127, 29, 29, .11), rgba(15, 15, 20, .72)) !important;
+        opacity: .86 !important;
+        border-color: rgba(248, 113, 113, .38) !important;
       }
       .coming-soon-card:hover {
         transform: none !important;
-        border-color: rgba(248, 113, 113, .42) !important;
-        box-shadow: 0 0 30px rgba(239, 68, 68, .09) !important;
+        border-color: rgba(248, 113, 113, .55) !important;
+        box-shadow: 0 0 30px rgba(239, 68, 68, .10) !important;
       }
       .coming-soon-badge {
-        position: absolute;
-        top: 14px;
-        right: 14px;
-        z-index: 20;
-        display: inline-flex;
-        align-items: center;
-        padding: 6px 10px;
-        border: 1px solid rgba(248, 113, 113, .52);
-        border-radius: 999px;
-        background: rgba(127, 29, 29, .24);
-        color: #f87171;
-        font-family: var(--app-font-mono, monospace);
-        font-size: 9px;
-        font-weight: 700;
-        letter-spacing: .13em;
-        line-height: 1;
-        box-shadow: 0 0 18px rgba(239, 68, 68, .12);
-      }
-      [data-testid="game-select-terraria"],
-      [data-testid="game-select-project-zomboid"] {
-        cursor: not-allowed !important;
-      }
-      @supports selector(a:has(.coming-soon-badge)) {
-        a:has(.coming-soon-badge) {
-          pointer-events: none !important;
-          cursor: not-allowed !important;
-        }
+        position: absolute !important;
+        top: 14px !important;
+        right: 14px !important;
+        z-index: 999 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 6px 10px !important;
+        border: 1px solid rgba(248, 113, 113, .70) !important;
+        border-radius: 999px !important;
+        background: rgba(127, 29, 29, .32) !important;
+        color: #ff6b6b !important;
+        font-family: monospace !important;
+        font-size: 9px !important;
+        font-weight: 800 !important;
+        letter-spacing: .13em !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+        box-shadow: 0 0 18px rgba(239, 68, 68, .18) !important;
+        pointer-events: none !important;
       }
     </style>
   </head>
   <body>
     <div id="root"></div>
     <script>
-      /* ArveX game-card guard + dedicated-page routing.
-         Event delegation keeps this working across React re-renders. */
+      /* ArveX: Terraria + Project Zomboid are coming soon.
+         This guard intentionally works even if the React card markup changes. */
       (function () {
-        const comingSoonGames = new Set(['terraria', 'project-zomboid']);
+        const games = [
+          { slug: 'terraria', label: 'Terraria' },
+          { slug: 'project-zomboid', label: 'Project Zomboid' }
+        ];
 
-        function decorateGameCards() {
-          comingSoonGames.forEach(function (slug) {
-            const card = document.querySelector('[data-testid="card-game-' + slug + '"]');
-            if (!card) return;
+        function findCards(game) {
+          const exact = document.querySelectorAll(
+            '[data-testid="card-game-' + game.slug + '"], [data-testid="game-select-' + game.slug + '"]'
+          );
+          if (exact.length) return Array.from(exact);
 
-            card.classList.add('coming-soon-card');
-            card.setAttribute('aria-disabled', 'true');
-            card.setAttribute('title', 'Coming soon');
-
-            if (!card.querySelector('.coming-soon-badge')) {
-              const badge = document.createElement('span');
-              badge.className = 'coming-soon-badge';
-              badge.textContent = 'COMING SOON';
-              badge.setAttribute('aria-label', 'Coming soon');
-              card.appendChild(badge);
-            }
+          return Array.from(document.querySelectorAll('a, button, div')).filter(function (el) {
+            if (el.children.length > 12) return false;
+            const text = (el.textContent || '').replace(/\s+/g, ' ').trim();
+            return text.includes(game.label) && text.includes('SELECT GAME');
           });
         }
 
-        function blockComingSoon(event) {
+        function decorate() {
+          games.forEach(function (game) {
+            findCards(game).forEach(function (card) {
+              card.classList.add('coming-soon-card');
+              card.setAttribute('aria-disabled', 'true');
+              card.setAttribute('title', game.label + ' — Coming soon');
+
+              if (!card.querySelector('.coming-soon-badge')) {
+                const badge = document.createElement('span');
+                badge.className = 'coming-soon-badge';
+                badge.textContent = 'COMING SOON';
+                badge.setAttribute('aria-label', 'Coming soon');
+                card.appendChild(badge);
+              }
+            });
+          });
+        }
+
+        function block(event) {
           const target = event.target instanceof Element ? event.target : null;
           if (!target) return;
 
-          const card = target.closest('[data-testid="card-game-terraria"], [data-testid="card-game-project-zomboid"]');
-          if (card) {
+          const href = target.closest('a[href]')?.getAttribute('href') || '';
+          if (/\/services\/game-hosting\/(terraria|project-zomboid)(?:[/?#]|$)/i.test(href)) {
             event.preventDefault();
             event.stopPropagation();
-            if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
-            return false;
+            if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+            return;
           }
 
-          const link = target.closest('a[href]');
-          if (link) {
-            const href = link.getAttribute('href') || '';
-            if (/\/services\/game-hosting\/(terraria|project-zomboid)(?:[/?#]|$)/i.test(href)) {
+          for (const game of games) {
+            const cards = findCards(game);
+            if (cards.some(function (card) { return card === target || card.contains(target); })) {
               event.preventDefault();
               event.stopPropagation();
-              if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
-              return false;
+              if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+              return;
             }
           }
         }
 
-        document.addEventListener('click', blockComingSoon, true);
-        document.addEventListener('pointerdown', blockComingSoon, true);
-        document.addEventListener('auxclick', blockComingSoon, true);
-
-        decorateGameCards();
-        new MutationObserver(decorateGameCards).observe(document.documentElement, {
-          childList: true,
-          subtree: true
-        });
+        document.addEventListener('click', block, true);
+        document.addEventListener('pointerdown', block, true);
+        document.addEventListener('auxclick', block, true);
+        decorate();
+        new MutationObserver(decorate).observe(document.documentElement, { childList: true, subtree: true });
       })();
     </script>
     <script type="module" src="/src/main.tsx"></script>
