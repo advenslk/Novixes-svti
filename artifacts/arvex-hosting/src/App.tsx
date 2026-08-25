@@ -421,7 +421,7 @@ function PlanCard({plan, featured=false,onSelect}:{plan:any;featured?:boolean;on
       <strong>LKR {Number(plan.price).toLocaleString('en-LK')}</strong>
       <span>/ mo</span>
       <small className="plan-usd-price">
-        ≈ ${(Number(plan.price) / 3890).toFixed(2)} USD
+        ≈ ${(Number(plan.price) / (plan.kind?.startsWith('minecraft-') ? 320 : 3890)).toFixed(2)} USD
       </small>
     </>
   ) : (
@@ -1918,7 +1918,7 @@ function GameServerPage() {
             {plans.map((plan, i) => (
               <PlanCard
                 key={plan.name}
-                plan={plan}
+                plan={{ ...plan, kind: selectedGame.slug }}
                 featured={i === 3}
                 onSelect={() =>
                   setSelectedPlan({
